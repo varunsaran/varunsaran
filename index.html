@@ -1,15 +1,403 @@
 <!DOCTYPE html>
 <html>
-    
+
 <head>
-    <link rel="stylesheet" href="styles.css" />
-
+  <style>
+  figs {
+    white-space: normal;
+    display: inline-block;
+    *display: inline;
+    padding: 10;
+  }
+  </style>
 </head>
-<body>
-    <img src="https://github.com/hackclub/dinosaurs/raw/master/smart_dinosaur_docs.png">
 
-    <h1> Prophet Orpheus</h1>
-    <p> Coder Dino </p>
-    <p> Will Code for Food</p>
+<title>194 Proj 1</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+</style>
+<body class="w3-light-grey">
+
+<!-- w3-content defines a container for fixed size centered content,
+and is wrapped around the whole page content, except for the footer in this example -->
+<div class="w3-content" style="max-width:1400px">
+
+<!-- Header -->
+<header class="w3-container w3-center w3-padding-32">
+  <h1><b>COMPSCI 194-26: Project 1</b></h1>
+  <p>Images of the Russian Empire:
+Colorizing the Prokudin-Gorskii photo collection</p>
+<p>Varun Saran </p>
+</header>
+
+<!-- Grid -->
+<div class="w3-row">
+
+<!-- Blog entries -->
+<div class>
+
+  <div class="w3-card-4 w3-margin w3-white">
+    <center>
+  <img src="Prokudin-Groskii.jpeg"style="width:25%">
+</center>
+    <div class="w3-container">
+      <h3><b>Background</b></h3>
+      <h5>The Prokudin-Gorskii Collection</h5>
+    </div>
+    <div class="w3-container">
+      <p>
+        Sergei Mikhailovich Prokudin-Gorskii was a man well ahead of his time. Convinced, as early as 1907, that color photography was the wave of the future, he won Tzar's special permission to travel across the vast Russian Empire and take color photographs of everything he saw including the only color portrait of Leo Tolstoy. And he really photographed everything: people, buildings, landscapes, railroads, bridges... thousands of color pictures! His idea was simple: record three exposures of every scene onto a glass plate using a red, a green, and a blue filter. Never mind that there was no way to print color photographs until much later -- he envisioned special projectors to be installed in "multimedia" classrooms all across Russia where the children would be able to learn about their vast country. Alas, his plans never materialized: he left Russia in 1918, right after the revolution, never to return again. Luckily, his RGB glass plate negatives, capturing the last years of the Russian Empire, survived and were purchased in 1948 by the Library of Congress. The LoC has recently digitized the negatives and made them available on-line.
+In this project, I attempt to combine these seemingly black and white images with different color filters, into a single colored image.
+
+      </p>
+    </div>
+  </div>
+  <!-- Blog entry -->
+  <div class="w3-card-4 w3-margin w3-white">
+    <div class="w3-container">
+      <h3><b>Naive Exhaustive Search using Similarity Metrics</b></h3>
+      <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+    </div>
+
+    <div class="w3-container">
+      <p>
+        A simple stacking of the 3 channels is not good enough because each channel is slightly different, due to either the environment changing ever so slightly, or just the camera moving between different clicks. So before we can stack the channels, we must try to align them.
+To do this, I tried two different similarity metrics: Sum of Squared Differences (SSD) and normalized cross-correlation (NCC). SSD is the L2 norm of the difference of 2 channels, where a higher score represents a greater difference between images. So lower scores are better. NCC is the dot product between two normalized vectors. To convert 2D images into vectors, I flattened them and then compared them. Since they are normalized vectors, a perfect match would have a dot product of 1, and the score gets closer to 0 as the images get more and more different. So a higher score is best.
+To find the best alignment, I used an exhaustive search over a range of  [-20, 20] pixels in both the x and y direction. Based on my testing, I found that NCC performed significantly better than SSD. So for all (small) images, I ran SSD with exhaustive search.
+      </p>
+    </div>
+  </div>
+
+
+  <hr>
+
+  <div class="w3-card-4 w3-margin w3-white">
+    <div class="w3-container">
+      <h3><b>Cropping</b></h3>
+    </div>
+    <div class="w3-container">
+      <p>
+The borders of each of the channels are slightly chaotic and don’t line up well. Using these values would make our similarity metric return haywire results. So before we do anything, I cropped off 15% of the image on all 4 sides. This gets rid of the noisy borders, and only uses good, reliable, internal pixels.
+In addition, when translating a channel, part of the image is filled with 0s. This made NCC give strange results. I started with a color image, split it into 3 images, and translated the R channel by (10, 10) followed by (-10, -10). In theory, ncc should return a perfect match. But it didn’t, and even thought a non (0,0) translation gave better results. So whenever I translated an image, I cropped out the amount by which it was translated to ensure there are no extra 0s.
+As I write this report, I realize I could have used np.roll to roll the borders to the other side, instead of  the WarpAffine shown at the python tutorial. While this wouldn’t have changed the results by much, it should save some time by not having to crop part of the image every time it is translated (done 1600 times for an exhaustive search over [-20, 20]
+      </p>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="w3-card-4 w3-margin w3-white">
+    <div class="w3-container">
+      <h3><b>Exhasutive Results on JPEG images</b></h3>
+      <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+    </div>
+
+    <div class="w3-container">
+      <p>
+      Here are some results on smaller (.jpeg) images:
+      </p>
+      <center>
+      <div>
+        <figs>
+          <img src="./output_files/0_out_cathedral.jpeg" width="300" height="300">
+          <figcaption>R: (3, 12), G: (2, 5)</figcaption>
+        </figs>
+
+        <figs>
+          <img src="./output_files/7_out_monastery.jpeg" width="300" height="300">
+          <figcaption>R: (2, 3), G: (2, -3)</figcaption>
+        </figs>
+
+      <figs>
+        <img src="./output_files/11_out_tobolsk.jpeg" width="300" height="300">
+        <figcaption>R: (3, 7), G: (3, 3)</figcaption>
+      </figs>
+      </div>
+    </center>
+    </div>
+
+  </div>
+
+
+  <hr>
+
+
+
+  <div class="w3-card-4 w3-margin w3-white">
+    <div class="w3-container">
+      <h3><b>Image Pyramids to speed up search on bigger images </b></h3>
+    </div>
+    <div class="w3-container">
+      <p>
+        On bigger images, this technique doesn’t work as well because we expect bigger translations than a max of 20 in x or y. Increasing the range beyond [-20, 20] makes exhaustive search extremely slow as it searches every x,y combination, resulting in x*y runs.
+To speed this process up, I used a coarse-to-fine image pyramid. An image pyramid contains the original, high quality image at the base of the pyramid, and then as you work your way up, the image is rescaled to be smaller than before. So at the top of the pyramid, is the coarsest, lowest quality image.
+We first run the original exhaustive search on the coarsest image to get an initial estimate of the translation needed to align the image. We then work our way down the pyramid, only trying translations near the one returned by the level above.
+
+If the layer above us returned a translation of (50, 50), we know that there’s no point trying translations like (-75, -40) which our original exhaustive search would have done. So we can just focus on translations around (50, 50), and we save a lot of time in this way.
+      </p>
+      <center>
+        <img src="image_pyramid.png" width="400" height="400">
+      </center>
+    </div>
+  </div>
+
+    <hr>
+
+
+
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Image Pyramid Results on TIFF images</b></h3>
+        <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+      </div>
+
+      <div class="w3-container">
+        <p>
+        Here are some results on big (.tif) images:
+        </p>
+        <center>
+        <div>
+          <figs>
+            <img src="./output_files/1_out_church.jpeg"width="300" height="300">
+            <figcaption>R: (-2, 58), G: (4, 26)</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./output_files/2_out_emir.jpeg"width="300" height="300">
+            <figcaption>R: (58, 104), G: (24, 50)</figcaption>
+          </figs>
+
+        <figs>
+            <img src="./output_files/3_out_harvesters.jpeg"width="300" height="300">
+          <figcaption>R: (14, 124), G: (16, 60)</figcaption>
+        </figs>
+        <figs>
+            <img src="./output_files/4_out_icon.jpeg"width="300" height="300">
+          <figcaption>R: (22, 90), G: (16, 40)</figcaption>
+        </figs>
+        </div>
+        </center>
+
+        <center>
+        <div>
+          <figs>
+            <img src="./output_files/5_out_lady.jpeg"width="300" height="300">
+            <figcaption>R: (12, 118), G: (8, 54)</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./output_files/6_out_melons.jpeg"width="300" height="300">
+            <figcaption>R: (14, 180), G: (10, 82)</figcaption>
+          </figs>
+
+        <figs>
+            <img src="./output_files/8_out_onion_church.jpeg"width="300" height="300">
+          <figcaption>R: (36, 108), G: (26, 52)</figcaption>
+        </figs>
+        <figs>
+            <img src="./output_files/9_out_self_portrait.jpeg"width="300" height="300">
+          <figcaption>R: (36, 176), G: (30, 80)</figcaption>
+        </figs>
+        </div>
+        </center>
+
+        <center>
+        <div>
+          <figs>
+            <img src="./output_files/10_out_three_generations.jpeg"width="300" height="300">
+            <figcaption>R: (12, 112), G: (14, 52)</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./output_files/12_out_train.jpeg"width="300" height="300">
+            <figcaption>R: (32, 88), G: (6, 42)</figcaption>
+          </figs>
+
+        <figs>
+            <img src="./output_files/13_out_workshop.jpeg"width="300" height="300">
+          <figcaption>R: (-8, 106), G: (0, 54)</figcaption>
+        </figs>
+
+        </div>
+        </center>
+
+      </div>
+    </div>
+
+
+
+
+    <hr>
+
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Additional Results</b></h3>
+      </div>
+      <div class="w3-container">
+        <p>
+          Here are some results on images outside of those given in the .data folder of the project spec
+          (these images can be found <a href="https://www.loc.gov/collections/prokudin-gorskii/">here</a>):
+        </p>
+
+
+        <center>
+        <div>
+          <figs>
+            <img src="./output_files/0_bw_master-pnp-prok-00000-00090u.jpeg"width="300" height="600">
+            <figcaption>3 channel black and white</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./output_files/0_in_master-pnp-prok-00000-00090u.jpeg"width="400" height="400">
+            <figcaption>Blind stacking of 3 channels</figcaption>
+          </figs>
+
+        <figs>
+            <img src="./output_files/0_out_master-pnp-prok-00000-00090u.jpeg"width="400" height="400">
+          <figcaption>Aligned color image</figcaption>
+        </figs>
+
+        </div>
+        </center>
+
+        <center>
+        <div>
+          <figs>
+            <img src="./output_files/0_bw_master-pnp-prok-00100-00161u.jpeg"width="300" height="600">
+            <figcaption>3 channel black and white</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./output_files/0_in_master-pnp-prok-00100-00161u.jpeg"width="400" height="400">
+            <figcaption>Blind stacking of 3 channels</figcaption>
+          </figs>
+
+        <figs>
+            <img src="./output_files/0_out_master-pnp-prok-00100-00161u.jpeg"width="400" height="400">
+          <figcaption>Aligned color image</figcaption>
+        </figs>
+
+        </div>
+        </center>
+
+        <center>
+        <div>
+          <figs>
+            <img src="./output_files/2_bw_master-pnp-prok-00200-00201u.jpeg"width="300" height="600">
+            <figcaption>3 channel black and white</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./output_files/2_in_master-pnp-prok-00200-00201u.jpeg"width="400" height="400">
+            <figcaption>Blind stacking of 3 channels</figcaption>
+          </figs>
+
+        <figs>
+            <img src="./output_files/2_out_master-pnp-prok-00200-00201u.jpeg"width="400" height="400">
+          <figcaption>Aligned color image</figcaption>
+        </figs>
+
+        </div>
+        </center>
+
+
+
+
+      </div>
+    </div>
+
+
+    <hr>
+
+
+
+
+
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Edge Detection</b></h3>
+      </div>
+      <div class="w3-container">
+        <p>
+
+        For the main assignment, we used the raw pixel values of each channel. However, this isn’t the best metric because pixel values don’t need to be the same across different channels. In fact, if they were, the 3 channel stacked image would be grayscale.
+        A better metric to align images is to first find the edges in the image (which tell a simpler story about the image), and then lining up 2 images with only edges. I used Canny edge detection, and here are some results:
+
+        Using edges worked best with SSD over NCC, and was a bit faster than the naive NCC alignment. For the regular image pyramid, due to time restrictions, I had to use the values from the
+        2nd from the bottom layer (not the bottom-most = finest layer), so the final translation wasn't based off of the highest quality image.
+        With edge detection and SSD, it ran fast enough that I could go all the way to the bottom. This adds some minor accuracy to the pictures we use, and is expected to add much more accuracy to bigger pictures where naive NCC might be too slow.
+        Here is an example of melons.tif, using naive NCC versus edge detection with SSD. The difference is not visible, but there is a couple pixel difference due to the extra run on the highest quality layer of the image pyramid.
+
+        </p>
+        <center>
+          <div>
+            <figs>
+              <img src="./output_files/6_out_melons.jpeg"width="400" height="400">
+              <figcaption>R: (14, 180), G: (10, 82)</figcaption>
+            </figs>
+            <figs>
+              <img src="./output_files/0_edge_melons.jpeg"width="400" height="400">
+              <figcaption>R: (13, 176), G: (10, 80)</figcaption>
+            </figs>
+          </div>
+        </center>
+
+
+        <p>
+          And here, we can see the effect of using edge detection on our image pyramid. Instead of comparing background pixels and other noisy information,
+          we are only comparing the most important information (and what I use as reference when determining whether the image is actually aligned).
+          This means our similarity metric (SSD in my case) is only affected by important pixels.
+          This also helps us visualize the usefulness of the image pyramid. In the first image, we can just kind of tell whats going on, and in each next layer,
+          we get more and more information. But even the coarser images are good enough to get a decent estimate of how to align an image.
+
+        </p>
+
+
+        <center>
+          <div>
+            <figs>
+              <img src="edge_4.jpeg"width="200" height="200">
+            </figs>
+            <figs>
+              <img src="edge_3.jpeg"width="200" height="200">
+            </figs>
+            <figs>
+              <img src="edge_2.jpeg"width="200" height="200">
+            </figs>
+            <figs>
+              <img src="edge_1.jpeg"width="200" height="200">
+            </figs>
+            <figs>
+              <img src="edge_0.jpeg"width="200" height="200">
+            </figs>
+          </div>
+        </center>
+      </div>
+    </div>
+
+    <hr>
+
+
+
+    <hr>
+
+
+
+
+
+</div>
+
+</div>
+
+<!-- END GRID -->
+</div><br>
+
+<!-- END w3-content -->
+</div>
+
 </body>
 </html>
