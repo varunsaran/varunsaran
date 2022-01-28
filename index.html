@@ -10,9 +10,23 @@
     padding: 10;
   }
   </style>
+  <script>
+function show(shown, hidden) {
+  if (hidden == "Page4") {
+    document.getElementById("Page4b").style.display='none';
+  }
+  document.getElementById(hidden).style.display='none';
+  document.getElementById(shown).style.display='block';
+  if (shown === "Page4") {
+    document.getElementById("Page4b").style.display='block';
+  }
+  onPage = shown;
+  return false;
+}
+</script>
 </head>
 
-<title>194 Proj 1</title>
+<title>Computer Vision</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -28,122 +42,131 @@ and is wrapped around the whole page content, except for the footer in this exam
 
 <!-- Header -->
 <header class="w3-container w3-center w3-padding-32">
-  <h1><b>COMPSCI 194-26: Project 1</b></h1>
-  <p>Images of the Russian Empire:
-Colorizing the Prokudin-Gorskii photo collection</p>
+  <h1><b>COMPSCI 194-26: Computer Vision and Computational Photography</b></h1>
 <p>Varun Saran </p>
 </header>
-
-<!-- Grid -->
+<script> var onPage = 'Page1';</script>
 <div class="w3-row">
+  <a href="#" onclick="return show('Home',onPage);">Home</a>
+  <a href="#" onclick="return show('Page1',onPage);">Colorizing Images</a>
+  <a href="#" onclick="return show('Page2',onPage);">Filters and Image Hybridization</a>
+  <a href="#" onclick="return show('Page3',onPage);">Face Morphing</a>
+  <a href="#" onclick="return show('Page4',onPage);">Image Warping and Mosaicing</a>
+  <a href="#" onclick="return show('Page5',onPage);">Facial Keypoint Detection with Neural Networks</a>
+  <a href="#" onclick="return show('FinalProject',onPage);">AR + Gradient Domain Fusion</a>
+</div>
+<!-- Grid -->
 
-<!-- Blog entries -->
-<div class>
+<div class="w3-row" id="Page1">
+  <!-- Blog entries -->
+  <div class>
 
   <div class="w3-card-4 w3-margin w3-white">
+      <h3><b>Project 1: Images of the Russian Empire:
+  Colorizing the Prokudin-Gorskii photo collection</b></h3>
     <center>
-  <img src="Prokudin-Groskii.jpeg"style="width:25%">
-</center>
-    <div class="w3-container">
-      <h3><b>Background</b></h3>
-      <h5>The Prokudin-Gorskii Collection</h5>
-    </div>
-    <div class="w3-container">
-      <p>
-        Sergei Mikhailovich Prokudin-Gorskii was a man well ahead of his time. Convinced, as early as 1907, that color photography was the wave of the future, he won Tzar's special permission to travel across the vast Russian Empire and take color photographs of everything he saw including the only color portrait of Leo Tolstoy. And he really photographed everything: people, buildings, landscapes, railroads, bridges... thousands of color pictures! His idea was simple: record three exposures of every scene onto a glass plate using a red, a green, and a blue filter. Never mind that there was no way to print color photographs until much later -- he envisioned special projectors to be installed in "multimedia" classrooms all across Russia where the children would be able to learn about their vast country. Alas, his plans never materialized: he left Russia in 1918, right after the revolution, never to return again. Luckily, his RGB glass plate negatives, capturing the last years of the Russian Empire, survived and were purchased in 1948 by the Library of Congress. The LoC has recently digitized the negatives and made them available on-line.
-In this project, I attempt to combine these seemingly black and white images with different color filters, into a single colored image.
-
-      </p>
-    </div>
-  </div>
-  <!-- Blog entry -->
-  <div class="w3-card-4 w3-margin w3-white">
-    <div class="w3-container">
-      <h3><b>Naive Exhaustive Search using Similarity Metrics</b></h3>
-      <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
-    </div>
-
-    <div class="w3-container">
-      <p>
-        A simple stacking of the 3 channels is not good enough because each channel is slightly different, due to either the environment changing ever so slightly, or just the camera moving between different clicks. So before we can stack the channels, we must try to align them.
-To do this, I tried two different similarity metrics: Sum of Squared Differences (SSD) and normalized cross-correlation (NCC). SSD is the L2 norm of the difference of 2 channels, where a higher score represents a greater difference between images. So lower scores are better. NCC is the dot product between two normalized vectors. To convert 2D images into vectors, I flattened them and then compared them. Since they are normalized vectors, a perfect match would have a dot product of 1, and the score gets closer to 0 as the images get more and more different. So a higher score is best.
-To find the best alignment, I used an exhaustive search over a range of  [-20, 20] pixels in both the x and y direction. Based on my testing, I found that NCC performed significantly better than SSD. So for all (small) images, I ran SSD with exhaustive search.
-      </p>
-    </div>
-  </div>
-
-
-  <hr>
-
-  <div class="w3-card-4 w3-margin w3-white">
-    <div class="w3-container">
-      <h3><b>Cropping</b></h3>
-    </div>
-    <div class="w3-container">
-      <p>
-The borders of each of the channels are slightly chaotic and don’t line up well. Using these values would make our similarity metric return haywire results. So before we do anything, I cropped off 15% of the image on all 4 sides. This gets rid of the noisy borders, and only uses good, reliable, internal pixels.
-In addition, when translating a channel, part of the image is filled with 0s. This made NCC give strange results. I started with a color image, split it into 3 images, and translated the R channel by (10, 10) followed by (-10, -10). In theory, ncc should return a perfect match. But it didn’t, and even thought a non (0,0) translation gave better results. So whenever I translated an image, I cropped out the amount by which it was translated to ensure there are no extra 0s.
-As I write this report, I realize I could have used np.roll to roll the borders to the other side, instead of  the WarpAffine shown at the python tutorial. While this wouldn’t have changed the results by much, it should save some time by not having to crop part of the image every time it is translated (done 1600 times for an exhaustive search over [-20, 20]
-      </p>
-    </div>
-  </div>
-
-  <hr>
-
-  <div class="w3-card-4 w3-margin w3-white">
-    <div class="w3-container">
-      <h3><b>Exhasutive Results on JPEG images</b></h3>
-      <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
-    </div>
-
-    <div class="w3-container">
-      <p>
-      Here are some results on smaller (.jpeg) images:
-      </p>
-      <center>
-      <div>
-        <figs>
-          <img src="./output_files/0_out_cathedral.jpeg" width="300" height="300">
-          <figcaption>R: (3, 12), G: (2, 5)</figcaption>
-        </figs>
-
-        <figs>
-          <img src="./output_files/7_out_monastery.jpeg" width="300" height="300">
-          <figcaption>R: (2, 3), G: (2, -3)</figcaption>
-        </figs>
-
-      <figs>
-        <img src="./output_files/11_out_tobolsk.jpeg" width="300" height="300">
-        <figcaption>R: (3, 7), G: (3, 3)</figcaption>
-      </figs>
+  <img src="./p1_output_files/Prokudin-Groskii.jpeg"style="width:25%">
+  </center>
+      <div class="w3-container">
+        <h3><b>Background</b></h3>
+        <h5>The Prokudin-Gorskii Collection</h5>
       </div>
-    </center>
+      <div class="w3-container">
+        <p>
+          Sergei Mikhailovich Prokudin-Gorskii was a man well ahead of his time. Convinced, as early as 1907, that color photography was the wave of the future, he won Tzar's special permission to travel across the vast Russian Empire and take color photographs of everything he saw including the only color portrait of Leo Tolstoy. And he really photographed everything: people, buildings, landscapes, railroads, bridges... thousands of color pictures! His idea was simple: record three exposures of every scene onto a glass plate using a red, a green, and a blue filter. Never mind that there was no way to print color photographs until much later -- he envisioned special projectors to be installed in "multimedia" classrooms all across Russia where the children would be able to learn about their vast country. Alas, his plans never materialized: he left Russia in 1918, right after the revolution, never to return again. Luckily, his RGB glass plate negatives, capturing the last years of the Russian Empire, survived and were purchased in 1948 by the Library of Congress. The LoC has recently digitized the negatives and made them available on-line.
+  In this project, I attempt to combine these seemingly black and white images with different color filters, into a single colored image.
+
+        </p>
+      </div>
+    </div>
+    <!-- Blog entry -->
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Naive Exhaustive Search using Similarity Metrics</b></h3>
+        <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+      </div>
+
+      <div class="w3-container">
+        <p>
+          A simple stacking of the 3 channels is not good enough because each channel is slightly different, due to either the environment changing ever so slightly, or just the camera moving between different clicks. So before we can stack the channels, we must try to align them.
+  To do this, I tried two different similarity metrics: Sum of Squared Differences (SSD) and normalized cross-correlation (NCC). SSD is the L2 norm of the difference of 2 channels, where a higher score represents a greater difference between images. So lower scores are better. NCC is the dot product between two normalized vectors. To convert 2D images into vectors, I flattened them and then compared them. Since they are normalized vectors, a perfect match would have a dot product of 1, and the score gets closer to 0 as the images get more and more different. So a higher score is best.
+  To find the best alignment, I used an exhaustive search over a range of  [-20, 20] pixels in both the x and y direction. Based on my testing, I found that NCC performed significantly better than SSD. So for all (small) images, I ran SSD with exhaustive search.
+        </p>
+      </div>
     </div>
 
-  </div>
 
+    <hr>
 
-  <hr>
-
-
-
-  <div class="w3-card-4 w3-margin w3-white">
-    <div class="w3-container">
-      <h3><b>Image Pyramids to speed up search on bigger images </b></h3>
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Cropping</b></h3>
+      </div>
+      <div class="w3-container">
+        <p>
+  The borders of each of the channels are slightly chaotic and don’t line up well. Using these values would make our similarity metric return haywire results. So before we do anything, I cropped off 15% of the image on all 4 sides. This gets rid of the noisy borders, and only uses good, reliable, internal pixels.
+  In addition, when translating a channel, part of the image is filled with 0s. This made NCC give strange results. I started with a color image, split it into 3 images, and translated the R channel by (10, 10) followed by (-10, -10). In theory, ncc should return a perfect match. But it didn’t, and even thought a non (0,0) translation gave better results. So whenever I translated an image, I cropped out the amount by which it was translated to ensure there are no extra 0s.
+  As I write this report, I realize I could have used np.roll to roll the borders to the other side, instead of  the WarpAffine shown at the python tutorial. While this wouldn’t have changed the results by much, it should save some time by not having to crop part of the image every time it is translated (done 1600 times for an exhaustive search over [-20, 20]
+        </p>
+      </div>
     </div>
-    <div class="w3-container">
-      <p>
-        On bigger images, this technique doesn’t work as well because we expect bigger translations than a max of 20 in x or y. Increasing the range beyond [-20, 20] makes exhaustive search extremely slow as it searches every x,y combination, resulting in x*y runs.
-To speed this process up, I used a coarse-to-fine image pyramid. An image pyramid contains the original, high quality image at the base of the pyramid, and then as you work your way up, the image is rescaled to be smaller than before. So at the top of the pyramid, is the coarsest, lowest quality image.
-We first run the original exhaustive search on the coarsest image to get an initial estimate of the translation needed to align the image. We then work our way down the pyramid, only trying translations near the one returned by the level above.
 
-If the layer above us returned a translation of (50, 50), we know that there’s no point trying translations like (-75, -40) which our original exhaustive search would have done. So we can just focus on translations around (50, 50), and we save a lot of time in this way.
-      </p>
-      <center>
-        <img src="image_pyramid.png" width="400" height="400">
+    <hr>
+
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Exhasutive Results on JPEG images</b></h3>
+        <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+      </div>
+
+      <div class="w3-container">
+        <p>
+        Here are some results on smaller (.jpeg) images:
+        </p>
+        <center>
+        <div>
+          <figs>
+            <img src="./p1_output_files/0_out_cathedral.jpeg" width="300" height="300">
+            <figcaption>R: (3, 12), G: (2, 5)</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./p1_output_files/7_out_monastery.jpeg" width="300" height="300">
+            <figcaption>R: (2, 3), G: (2, -3)</figcaption>
+          </figs>
+
+        <figs>
+          <img src="./p1_output_files/11_out_tobolsk.jpeg" width="300" height="300">
+          <figcaption>R: (3, 7), G: (3, 3)</figcaption>
+        </figs>
+        </div>
       </center>
+      </div>
+
     </div>
-  </div>
+
+
+    <hr>
+
+
+
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Image Pyramids to speed up search on bigger images </b></h3>
+      </div>
+      <div class="w3-container">
+        <p>
+          On bigger images, this technique doesn’t work as well because we expect bigger translations than a max of 20 in x or y. Increasing the range beyond [-20, 20] makes exhaustive search extremely slow as it searches every x,y combination, resulting in x*y runs.
+  To speed this process up, I used a coarse-to-fine image pyramid. An image pyramid contains the original, high quality image at the base of the pyramid, and then as you work your way up, the image is rescaled to be smaller than before. So at the top of the pyramid, is the coarsest, lowest quality image.
+  We first run the original exhaustive search on the coarsest image to get an initial estimate of the translation needed to align the image. We then work our way down the pyramid, only trying translations near the one returned by the level above.
+
+  If the layer above us returned a translation of (50, 50), we know that there’s no point trying translations like (-75, -40) which our original exhaustive search would have done. So we can just focus on translations around (50, 50), and we save a lot of time in this way.
+        </p>
+        <center>
+          <img src="./p1_output_files/image_pyramid.png" width="400" height="400">
+        </center>
+      </div>
+    </div>
 
     <hr>
 
@@ -162,21 +185,21 @@ If the layer above us returned a translation of (50, 50), we know that there’s
         <center>
         <div>
           <figs>
-            <img src="./output_files/1_out_church.jpeg"width="300" height="300">
+            <img src="./p1_output_files/1_out_church.jpeg"width="300" height="300">
             <figcaption>R: (-2, 58), G: (4, 26)</figcaption>
           </figs>
 
           <figs>
-            <img src="./output_files/2_out_emir.jpeg"width="300" height="300">
+            <img src="./p1_output_files/2_out_emir.jpeg"width="300" height="300">
             <figcaption>R: (58, 104), G: (24, 50)</figcaption>
           </figs>
 
         <figs>
-            <img src="./output_files/3_out_harvesters.jpeg"width="300" height="300">
+            <img src="./p1_output_files/3_out_harvesters.jpeg"width="300" height="300">
           <figcaption>R: (14, 124), G: (16, 60)</figcaption>
         </figs>
         <figs>
-            <img src="./output_files/4_out_icon.jpeg"width="300" height="300">
+            <img src="./p1_output_files/4_out_icon.jpeg"width="300" height="300">
           <figcaption>R: (22, 90), G: (16, 40)</figcaption>
         </figs>
         </div>
@@ -185,21 +208,21 @@ If the layer above us returned a translation of (50, 50), we know that there’s
         <center>
         <div>
           <figs>
-            <img src="./output_files/5_out_lady.jpeg"width="300" height="300">
+            <img src="./p1_output_files/5_out_lady.jpeg"width="300" height="300">
             <figcaption>R: (12, 118), G: (8, 54)</figcaption>
           </figs>
 
           <figs>
-            <img src="./output_files/6_out_melons.jpeg"width="300" height="300">
+            <img src="./p1_output_files/6_out_melons.jpeg"width="300" height="300">
             <figcaption>R: (14, 180), G: (10, 82)</figcaption>
           </figs>
 
         <figs>
-            <img src="./output_files/8_out_onion_church.jpeg"width="300" height="300">
+            <img src="./p1_output_files/8_out_onion_church.jpeg"width="300" height="300">
           <figcaption>R: (36, 108), G: (26, 52)</figcaption>
         </figs>
         <figs>
-            <img src="./output_files/9_out_self_portrait.jpeg"width="300" height="300">
+            <img src="./p1_output_files/9_out_self_portrait.jpeg"width="300" height="300">
           <figcaption>R: (36, 176), G: (30, 80)</figcaption>
         </figs>
         </div>
@@ -208,17 +231,17 @@ If the layer above us returned a translation of (50, 50), we know that there’s
         <center>
         <div>
           <figs>
-            <img src="./output_files/10_out_three_generations.jpeg"width="300" height="300">
+            <img src="./p1_output_files/10_out_three_generations.jpeg"width="300" height="300">
             <figcaption>R: (12, 112), G: (14, 52)</figcaption>
           </figs>
 
           <figs>
-            <img src="./output_files/12_out_train.jpeg"width="300" height="300">
+            <img src="./p1_output_files/12_out_train.jpeg"width="300" height="300">
             <figcaption>R: (32, 88), G: (6, 42)</figcaption>
           </figs>
 
         <figs>
-            <img src="./output_files/13_out_workshop.jpeg"width="300" height="300">
+            <img src="./p1_output_files/13_out_workshop.jpeg"width="300" height="300">
           <figcaption>R: (-8, 106), G: (0, 54)</figcaption>
         </figs>
 
@@ -247,17 +270,17 @@ If the layer above us returned a translation of (50, 50), we know that there’s
         <center>
         <div>
           <figs>
-            <img src="./output_files/0_bw_master-pnp-prok-00000-00090u.jpeg"width="300" height="600">
+            <img src="./p1_output_files/0_bw_master-pnp-prok-00000-00090u.jpeg"width="300" height="600">
             <figcaption>3 channel black and white</figcaption>
           </figs>
 
           <figs>
-            <img src="./output_files/0_in_master-pnp-prok-00000-00090u.jpeg"width="400" height="400">
+            <img src="./p1_output_files/0_in_master-pnp-prok-00000-00090u.jpeg"width="400" height="400">
             <figcaption>Blind stacking of 3 channels</figcaption>
           </figs>
 
         <figs>
-            <img src="./output_files/0_out_master-pnp-prok-00000-00090u.jpeg"width="400" height="400">
+            <img src="./p1_output_files/0_out_master-pnp-prok-00000-00090u.jpeg"width="400" height="400">
           <figcaption>Aligned color image</figcaption>
         </figs>
 
@@ -267,17 +290,17 @@ If the layer above us returned a translation of (50, 50), we know that there’s
         <center>
         <div>
           <figs>
-            <img src="./output_files/0_bw_master-pnp-prok-00100-00161u.jpeg"width="300" height="600">
+            <img src="./p1_output_files/0_bw_master-pnp-prok-00100-00161u.jpeg"width="300" height="600">
             <figcaption>3 channel black and white</figcaption>
           </figs>
 
           <figs>
-            <img src="./output_files/0_in_master-pnp-prok-00100-00161u.jpeg"width="400" height="400">
+            <img src="./p1_output_files/0_in_master-pnp-prok-00100-00161u.jpeg"width="400" height="400">
             <figcaption>Blind stacking of 3 channels</figcaption>
           </figs>
 
         <figs>
-            <img src="./output_files/0_out_master-pnp-prok-00100-00161u.jpeg"width="400" height="400">
+            <img src="./p1_output_files/0_out_master-pnp-prok-00100-00161u.jpeg"width="400" height="400">
           <figcaption>Aligned color image</figcaption>
         </figs>
 
@@ -287,17 +310,17 @@ If the layer above us returned a translation of (50, 50), we know that there’s
         <center>
         <div>
           <figs>
-            <img src="./output_files/2_bw_master-pnp-prok-00200-00201u.jpeg"width="300" height="600">
+            <img src="./p1_output_files/2_bw_master-pnp-prok-00200-00201u.jpeg"width="300" height="600">
             <figcaption>3 channel black and white</figcaption>
           </figs>
 
           <figs>
-            <img src="./output_files/2_in_master-pnp-prok-00200-00201u.jpeg"width="400" height="400">
+            <img src="./p1_output_files/2_in_master-pnp-prok-00200-00201u.jpeg"width="400" height="400">
             <figcaption>Blind stacking of 3 channels</figcaption>
           </figs>
 
         <figs>
-            <img src="./output_files/2_out_master-pnp-prok-00200-00201u.jpeg"width="400" height="400">
+            <img src="./p1_output_files/2_out_master-pnp-prok-00200-00201u.jpeg"width="400" height="400">
           <figcaption>Aligned color image</figcaption>
         </figs>
 
@@ -336,11 +359,11 @@ If the layer above us returned a translation of (50, 50), we know that there’s
         <center>
           <div>
             <figs>
-              <img src="./output_files/6_out_melons.jpeg"width="400" height="400">
+              <img src="./p1_output_files/6_out_melons.jpeg"width="400" height="400">
               <figcaption>R: (14, 180), G: (10, 82)</figcaption>
             </figs>
             <figs>
-              <img src="./output_files/0_edge_melons.jpeg"width="400" height="400">
+              <img src="./p1_output_files/0_edge_melons.jpeg"width="400" height="400">
               <figcaption>R: (13, 176), G: (10, 80)</figcaption>
             </figs>
           </div>
@@ -360,19 +383,19 @@ If the layer above us returned a translation of (50, 50), we know that there’s
         <center>
           <div>
             <figs>
-              <img src="edge_4.jpeg"width="200" height="200">
+              <img src="./p1_output_files/edge_4.jpeg"width="200" height="200">
             </figs>
             <figs>
-              <img src="edge_3.jpeg"width="200" height="200">
+              <img src="./p1_output_files/edge_3.jpeg"width="200" height="200">
             </figs>
             <figs>
-              <img src="edge_2.jpeg"width="200" height="200">
+              <img src="./p1_output_files/edge_2.jpeg"width="200" height="200">
             </figs>
             <figs>
-              <img src="edge_1.jpeg"width="200" height="200">
+              <img src="./p1_output_files/edge_1.jpeg"width="200" height="200">
             </figs>
             <figs>
-              <img src="edge_0.jpeg"width="200" height="200">
+              <img src="./p1_output_files/edge_0.jpeg"width="200" height="200">
             </figs>
           </div>
         </center>
@@ -380,18 +403,2329 @@ If the layer above us returned a translation of (50, 50), we know that there’s
     </div>
 
     <hr>
+    <hr>
 
+</div>
+<!-- end proj 1 -->
+</div>
+<div class="w3-row" id="Page2" style="display:none">
+
+  <!-- Header -->
+  <header class="w3-container w3-center w3-padding-32">
+    <h1><b>COMPSCI 194-26: Project 2</b></h1>
+    <p>Fun with Filters and Frequencies</p>
+  <p>Varun Saran </p>
+  </header>
+
+  <!-- Grid -->
+  <div class="w3-row">
+
+  <!-- Blog entries -->
+  <div class>
+
+    <div class="w3-card-4 w3-margin w3-white">
+
+          <div class="w3-container">
+            <div class="w3-container">
+              <h3><b>Part 1.1: Finite Difference Operator</b></h3>
+
+            </div>
+
+              <p>
+             Using derivates to get edges. The gradient magnitude image is created by first taking the partial derivative of the image with respect to x and y separately, using Dx = [1, -1] and Dy = [ [1], [-1]].
+  These were used as filter to convolve with the image. The resulting 2 images are the first 2 images displayed.
+  Then, to create the gradient magnitude image, the 2 gradients are combined to get
+  grad_image  = sqrt (grad_x^2 + grad_y^2).
+  Finally, the image is binarized to reduce noise and emphasize the edges by qualitatively choosing a threshold, and setting all values less than the threshold to 0, and all above it to 1 (or 255, depending on the format of the image)
+
+  </p>
+  <p>
+             In this section, we don't blur the image before taking the gradient.
+           </p>
+            <center>
+            <div>
+              <figs>
+                <img src="./p2_imgs/final_imgs/1.1_x_gradient.jpeg" width="300" height="300">
+                <figcaption>Gradient in x</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/final_imgs/1.1_y_gradient.jpeg" width="300" height="300">
+                <figcaption>Gradient in y</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/final_imgs/1.1_gradient.jpeg" width="300" height="300">
+              <figcaption>Gradient Magnitude Image</figcaption>
+            </figs>
+            <figs>
+              <img src="./p2_imgs/final_imgs/1.1_binarized_grad.jpeg" width="300" height="300">
+              <figcaption>Binarized gradient for sharper results</figcaption>
+            </figs>
+
+            </div>
+          </center>
+
+          </div>
+        </div>
+
+
+        <div class="w3-container">
+          <div class="w3-container">
+            <h3><b>Part 1.2: Derivative of Gaussian (DoG) Filter</b></h3>
+
+          </div>
+
+            <p>
+          Using derivates to get edges. In this section, we do blur the image before taking the gradient.
+          </p>
+          <center>
+          <div>
+            <figs>
+              <img src="./p2_imgs/final_imgs/1_2_x_gradient.jpeg" width="300" height="300">
+              <figcaption>Gradient in x</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p2_imgs/final_imgs/1_2_y_gradient.jpeg" width="300" height="300">
+              <figcaption>Gradient in y</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p2_imgs/final_imgs/1_2_gradient.jpeg" width="300" height="300">
+            <figcaption>Gradient Magnitude Image</figcaption>
+          </figs>
+          <figs>
+            <img src="./p2_imgs/final_imgs/1_2_binarized.jpeg" width="300" height="300">
+            <figcaption>Binarized gradient for sharper results</figcaption>
+          </figs>
+
+          </div>
+        </center>
+
+        <p>
+  Q1. What differences do you see?
+  </p>
+  <p>
+  The image is alot clearer, and the gradient image is a lot smoother. No more rapid zig zags to make curves (as seen in part 1.1, may require zooming in). Instead, the edges actually look like curves.
+  </p>
+  <p>
+  Now, we use a single convolution to blur the image and take the derivative using a derivative of gaussian filter.
+  </p>
+  <p>
+    <center>
+    <div>
+      <figs>
+        <img src="./p2_imgs/final_imgs/1_2_single_convolution.jpeg" width="300" height="300">
+        <figcaption>Single Convolution</figcaption>
+      </figs>
+    </div>
+  </center>
+
+  Q2. Verify that you get the same result as before.
+  </p>
+  <p>
+  Yes, result is the exact same. No information is lost, and convolutions are commutative so order doesn’t matter. This just speeds things up because we aren’t convolving with a big image twice.
+        </p>
+        </div>
+      </div>
+
+    </div>
 
 
     <hr>
 
 
 
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Sharpening Images </b></h3>
+      </div>
+      <div class="w3-container">
+        <p>
+          here, we use the low pass filter, and subtract it from the original image to get a high pass filter (an image with only high frequncies aka edges). We can add this high frequency image to the
+          original image to sharpen the image. We can scale the high frequency image by a scalar to increase its affect.
+          sharpened_image = original_image + alpha *(original_image - blurred_image)
+        </p>
+        <div class="w3-container">
+          <center>
+          <div>
+            <figs>
+              <img src="./p2_imgs/taj.jpeg"width="200" height="150">
+              <figcaption>Original Taj</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p2_imgs/sharpen/sharp_0.5.jpeg"width="200" height="150">
+              <figcaption>alpha = 0.5</figcaption>
+            </figs>
+            <figs>
+              <img src="./p2_imgs/sharpen/sharp_1.jpeg"width="200" height="150">
+              <figcaption>alpha = 1</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p2_imgs/sharpen/sharp_2.jpeg"width="200" height="150">
+            <figcaption>alpha = 2</figcaption>
+          </figs>
+          <figs>
+            <img src="./p2_imgs/sharpen/sharp_3.jpeg"width="200" height="150">
+            <figcaption>alpha = 3</figcaption>
+          </figs>
+          </div>
+        </center>
+      </div>
+      </div>
+    </div>
+
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Sharpening Images using a single convolution filter</b></h3>
+      </div>
+      <div class="w3-container">
+        <p>
+          Now, instead of 2 convolutions, we combine the filters first, and then do a single convolution with the image. this should have the same results, and
+          take much less time.
+        </p>
+        <div class="w3-container">
+          <center>
+          <div>
+            <figs>
+              <img src="./p2_imgs/taj.jpeg"width="200" height="150">
+              <figcaption>Original Taj</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p2_imgs/sharpen/sharp_0.5.jpeg"width="200" height="150">
+              <figcaption>alpha = 0.5</figcaption>
+            </figs>
+            <figs>
+              <img src="./p2_imgs/sharpen/sharp_1.jpeg"width="200" height="150">
+              <figcaption>alpha = 1</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p2_imgs/sharpen/sharp_2.jpeg"width="200" height="150">
+            <figcaption>alpha = 2</figcaption>
+          </figs>
+          <figs>
+            <img src="./p2_imgs/sharpen/sharp_3.jpeg"width="200" height="150">
+            <figcaption>alpha = 3</figcaption>
+          </figs>
+          </div>
+        </center>
+      </div>
+      </div>
+    </div>
 
 
+
+
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Sharpening Images </b></h3>
+      </div>
+      <div class="w3-container">
+        <p>
+          Now, I use my own image of a bird. The original image is very sharp. I first low-passed it to get a blurry image, and then used the blurry image to find
+          the high frequency edges to manually sharpen the (blurred) image. As alpha increases, the images get more and more sharp, until it gets overdone.
+        </p>
+        <div class="w3-container">
+          <center>
+          <div>
+            <figs>
+              <img src="./p2_imgs/sharpen/bird.jpeg"width="200" height="150">
+              <figcaption>Original sharp bird</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p2_imgs/sharpen/bird_blur.jpeg"width="200" height="150">
+              <figcaption>we blur the image and use this as a starting point to sharpen the image</figcaption>
+            </figs>
+        </div>
+        <div>
+            <figs>
+              <img src="./p2_imgs/sharpen/bird_sharp_1.jpeg"width="200" height="150">
+              <figcaption>alpha = 1</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p2_imgs/sharpen/bird_sharp_2.jpeg"width="200" height="150">
+            <figcaption>alpha = 2</figcaption>
+          </figs>
+          <figs>
+            <img src="./p2_imgs/sharpen/bird_sharp_3.jpeg"width="200" height="150">
+            <figcaption>alpha = 3</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./p2_imgs/sharpen/bird_sharp_4.jpeg"width="200" height="150">
+            <figcaption>alpha = 4</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./p2_imgs/sharpen/bird_sharp_5.jpeg"width="200" height="150">
+            <figcaption>alpha = 5</figcaption>
+          </figs>
+          </div>
+
+          <div>
+              <figs>
+                <img src="./p2_imgs/sharpen/bird_sharp_6.jpeg"width="200" height="150">
+                <figcaption>alpha = 6</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/sharpen/bird_sharp_7.jpeg"width="200" height="150">
+              <figcaption>alpha = 7</figcaption>
+            </figs>
+            <figs>
+              <img src="./p2_imgs/sharpen/bird_sharp_9.jpeg"width="200" height="150">
+              <figcaption>alpha = 9</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p2_imgs/sharpen/bird_sharp_12.jpeg"width="200" height="150">
+              <figcaption>alpha = 12</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p2_imgs/sharpen/bird_sharp_20.jpeg"width="200" height="150">
+              <figcaption>alpha = 20</figcaption>
+            </figs>
+          </div>
+        </center>
+        <p>
+  alpha = 3 or 4 seems to be the best sharpened image and closest (though understandably nearly not as good) to the original super sharp image.
+        </p>
+      </div>
+      </div>
+    </div>
+
+      <hr>
+
+
+
+      <div class="w3-card-4 w3-margin w3-white">
+        <div class="w3-container">
+          <h3><b>Hybrid Steph / Lebron</b></h3>
+          <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+        </div>
+        <p>
+          I averaged the low-pass and high-pass results of the 2 images to create the hybrid images.
+        </p>
+
+
+        <div class="w3-container">
+          <center>
+          <div>
+            <figs>
+              <img src="./p2_imgs/hybrid_imgs/2_2_steph.jpeg"width="200" height="150">
+              <figcaption>Original Steph Curry</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p2_imgs/hybrid_imgs/2_2_fft_steph.jpeg"width="200" height="150">
+              <figcaption>FFT of Steph</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p2_imgs/hybrid_imgs/2_2_sharp_steph.jpeg"width="200" height="150">
+            <figcaption>Sharpened steph (high pass)</figcaption>
+          </figs>
+          <figs>
+              <img src="./p2_imgs/hybrid_imgs/2_2_fft_sharp_steph.jpeg"width="200" height="150">
+            <figcaption>FFT of sharpened Steph</figcaption>
+          </figs>
+          </div>
+          </center>
+
+          <center>
+          <div>
+            <figs>
+              <img src="./p2_imgs/hybrid_imgs/2_2_lebron.jpeg"width="200" height="150">
+              <figcaption>Lebron James</figcaption>
+            </figs>
+
+            <figs>
+            <img src="./p2_imgs/hybrid_imgs/2_2_fft_lebron.jpeg"width="200" height="150">
+              <figcaption>FFT on Lebron</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p2_imgs/hybrid_imgs/2_2_blur_lebron.jpeg"width="200" height="150">
+            <figcaption>Blured Lebron (low pass)</figcaption>
+          </figs>
+          <figs>
+              <img src="./p2_imgs/hybrid_imgs/2_2_fft_blur_lebron.jpeg"width="200" height="150">
+            <figcaption>FFT of blurred Lebron</figcaption>
+          </figs>
+          </div>
+          </center>
+
+
+          <center>
+          <div>
+            <figs>
+              <img src="./p2_imgs/hybrid_imgs/2_2_stebron.jpeg"width="200" height="150">
+              <figcaption>Stebron</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p2_imgs/hybrid_imgs/2_2_fft_stebron.jpeg"width="200" height="150">
+              <figcaption>FFT of Stebron</figcaption>
+            </figs>
+          </div>
+          </center>
+
+          <center>
+          <div>
+            <figs>
+              <img src="./p2_imgs/hybrid_imgs/stebron_comparison.jpeg"width="600" height="450">
+              <figcaption>From close, Steph. From far, Lebron</figcaption>
+            </figs>
+          </div>
+          </center>
+
+        </div>
+      </div>
+
+
+        <div class="w3-card-4 w3-margin w3-white">
+          <div class="w3-container">
+            <h3><b>Hybrid Hemoa</b></h3>
+            <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+          </div>
+
+          <div class="w3-container">
+            <p>
+              Hybrid Chris Hemsworth and Jason Momoa
+            </p>
+            <center>
+            <div>
+              <figs>
+                <img src="./p2_imgs/hybrid_imgs/thor.jpeg" width="300" height="300">
+                <figcaption>Original Chris Hemsworth</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/hybrid_imgs/momoa.jpeg" width="500" height="300">
+                <figcaption>Original Jason Momoa</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/hybrid_imgs/momor_comparison.jpeg" width="500" height="300">
+              <figcaption>Hybrid Hemoa</figcaption>
+            </figs>
+            </div>
+          </center>
+          </div>
+
+        </div>
+
+  <!-- start dog-owl mix -->
+        <div class="w3-card-4 w3-margin w3-white">
+          <div class="w3-container">
+            <h3><b>Hybrid Dowl</b></h3>
+            <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+          </div>
+
+          <div class="w3-container">
+            <p>
+              Hybrid Dog and Owl. Another good example of a hybrid image.
+            </p>
+            <center>
+            <div>
+              <figs>
+                <img src="./p2_imgs/lion_dog/dog.jpeg" width="300" height="300">
+                <figcaption>Original Dog</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/lion_dog/lion.jpeg" width="500" height="300">
+                <figcaption>Original Owl</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/lion_dog/mixed_GOOD.jpeg" width="500" height="300">
+              <figcaption>Hybrid Dowl. left = close = dog, right = far = owl</figcaption>
+            </figs>
+            </div>
+          </center>
+          </div>
+        </div>
+
+        <div class="w3-card-4 w3-margin w3-white">
+          <div class="w3-container">
+            <h3><b>Hybrid Dowl</b></h3>
+            <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+          </div>
+
+          <div class="w3-container">
+            <p>
+              Hybrid Owl and Dog. In this case, the owl and dog were switched, so the one that was low-pass-filtered is now high-pas-filtered and vice versa.
+              This is a bad example.
+            </p>
+            <center>
+            <div>
+              <figs>
+                <img src="./p2_imgs/lion_dog/dog.jpeg" width="300" height="300">
+                <figcaption>Original Dog</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/lion_dog/lion.jpeg" width="500" height="300">
+                <figcaption>Original Owl</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/lion_dog/mixed_bad.jpg" width="500" height="300">
+              <figcaption>Hybrid Dowl. This a failure, because the dog is never visible.</figcaption>
+            </figs>
+            </div>
+          </center>
+          </div>
+
+        </div>
+
+
+        <div class="w3-card-4 w3-margin w3-white">
+          <div class="w3-container">
+            <h3><b>Multi resolution blendings</b></h3>
+            <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+          </div>
+          <div class="w3-container">
+            <p> The following algorithm was used to create the laplacian pyramid and blend 2 images:
+            </p>
+            <center>
+              <figs>
+                <img src="./p2_imgs/sharpen/steps.jpeg"width="700" height="200">
+              </figs>
+            </center>
+              <p>
+                And here are the results for the oraple = orange + apple </p>
+            </div>
+
+          <div class="w3-container">
+            <center>
+            <div>
+              <p>
+                Highest frequency (level 0)
+              </p>
+
+              <figs>
+                <img src="./p2_imgs/blend_imgs/right0.jpeg"width="200" height="150">
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/blend_imgs/left_0.jpeg"width="200" height="150">
+
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/blend_imgs/combined0.jpeg"width="200" height="150">
+            </figs>
+
+            </div>
+            </center>
+          </div>
+
+
+          <div class="w3-container">
+            <center>
+            <div>
+              <p>
+                Middle frequency (level 3)
+              </p>
+
+              <figs>
+                <img src="./p2_imgs/blend_imgs/right3.jpeg"width="200" height="150">
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/blend_imgs/left_3.jpeg"width="200" height="150">
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/blend_imgs/combined3.jpeg"width="200" height="150">
+            </figs>
+
+            </div>
+            </center>
+          </div>
+
+          <!--     -->
+          <div class="w3-container">
+            <center>
+            <div>
+              <p>
+                Lowest frequency (level 5)
+              </p>
+              <figs>
+                <img src="./p2_imgs/blend_imgs/right5.jpeg"width="200" height="150">
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/blend_imgs/left_5.jpeg"width="200" height="150">
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/blend_imgs/combined5.jpeg"width="200" height="150">
+            </figs>
+
+            </div>
+            </center>
+          </div>
+
+          <!--     -->
+          <div class="w3-container">
+            <center>
+            <div>
+              <p>
+                Final multi-resolution blended image
+              </p>
+              <figs>
+                <img src="./p2_imgs/blend_imgs/final_left.jpeg"width="200" height="150">
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/blend_imgs/final_right.jpeg"width="200" height="150">
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/blend_imgs/final.jpeg"width="200" height="150">
+            </figs>
+
+            </div>
+            <hr>
+            </center>
+          </div>
+
+
+        </div>
+
+        <!--  START witch campanile -->
+        <div class="w3-card-4 w3-margin w3-white">
+          <div class="w3-container">
+            <h3><b>Multi resolution blending of hat on campanile</b></h3>
+            <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+          </div>
+
+          <div class="w3-container">
+            <center>
+            <div>
+              <p>
+                Initial Images
+              </p>
+
+              <figs>
+                <img src="./p2_imgs/blend_2/camp.jpg"width="400" height="300">
+                <figcaption>Campanile</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/blend_2/hat.jpg"width="400" height="300">
+                <figcaption>Witch</figcaption>
+
+              </figs>
+              <figs>
+                <img src="./p2_imgs/blend_2/hat_mask.jpg"width="400" height="300">
+                  <figcaption>Custom Mask</figcaption>
+              </figs>
+
+            </div>
+            </center>
+          </div>
+
+          <div class="w3-container">
+            <center>
+            <div>
+              <p>
+                Highest frequency (level 0)
+              </p>
+
+              <figs>
+                <img src="./p2_imgs/blend_2/right0.jpeg"width="400" height="300">
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/blend_2/left_0.jpeg"width="400" height="300">
+
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/blend_2/combined0.jpeg"width="400" height="300">
+            </figs>
+
+            </div>
+            </center>
+          </div>
+
+
+          <div class="w3-container">
+            <center>
+            <div>
+              <p>
+                Middle frequency (level 3)
+              </p>
+
+              <figs>
+                <img src="./p2_imgs/blend_2/right3.jpeg"width="400" height="300">
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/blend_2/left_3.jpeg"width="400" height="300">
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/blend_2/combined3.jpeg"width="400" height="300">
+            </figs>
+
+            </div>
+            </center>
+          </div>
+
+          <!--     -->
+          <div class="w3-container">
+            <center>
+            <div>
+              <p>
+                Lowest frequency (level 5)
+              </p>
+              <figs>
+                <img src="./p2_imgs/blend_2/right5.jpeg"width="400" height="300">
+              </figs>
+
+              <figs>
+                <img src="./p2_imgs/blend_2/left_5.jpeg"width="400" height="300">
+              </figs>
+
+            <figs>
+              <img src="./p2_imgs/blend_2/combined5.jpeg"width="400" height="300">
+            </figs>
+
+            </div>
+            </center>
+          </div>
+
+          <!--     -->
+          <div class="w3-container">
+            <center>
+            <div>
+              <p>
+                Final multi-resolution blended image
+              </p>
+            <figs>
+              <img src="./p2_imgs/blend_2/woohoo.jpeg"width="600" height="450">
+            </figs>
+
+            </div>
+            <hr>
+            </center>
+          </div>
+        </div>
+
+
+                <!-- end section    -->
+
+                <!--     -->
+                <!--  START SOCCER KICK MAN -->
+                <div class="w3-card-4 w3-margin w3-white">
+                  <div class="w3-container">
+                    <h3><b>Multi resolution blending of soccer player kicking sleeping man</b></h3>
+                    <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+                  </div>
+
+                  <div class="w3-container">
+                    <center>
+                    <div>
+                      <p>
+                        Initial Images
+                      </p>
+
+                      <figs>
+                        <img src="./p2_imgs/test_imgs/kick.jpeg"width="400" height="300">
+                        <figcaption>Initial soccer player</figcaption>
+                      </figs>
+
+                      <figs>
+                        <img src="./p2_imgs/test_imgs/man.jpg"width="400" height="300">
+                        <figcaption>Sleeping Man</figcaption>
+
+                      </figs>
+                      <figs>
+                        <img src="./p2_imgs/test_imgs/man_mask.jpg"width="400" height="300">
+                          <figcaption>Custom Mask</figcaption>
+                      </figs>
+
+                    </div>
+                    </center>
+                  </div>
+
+                  <div class="w3-container">
+                    <center>
+                    <div>
+                      <p>
+                        Highest frequency (level 0)
+                      </p>
+
+                      <figs>
+                        <img src="./p2_imgs/test_imgs/right0.jpeg"width="400" height="300">
+                      </figs>
+
+                      <figs>
+                        <img src="./p2_imgs/test_imgs/left_0.jpeg"width="400" height="300">
+
+                      </figs>
+
+                    <figs>
+                      <img src="./p2_imgs/test_imgs/combined0.jpeg"width="400" height="300">
+                    </figs>
+
+                    </div>
+                    </center>
+                  </div>
+          <!--     -->
+
+                  <!--     -->
+
+                  <div class="w3-container">
+                    <center>
+                    <div>
+                      <p>
+                        Middle frequency (level 3)
+                      </p>
+
+                      <figs>
+                        <img src="./p2_imgs/test_imgs/right3.jpeg"width="400" height="300">
+                      </figs>
+
+                      <figs>
+                        <img src="./p2_imgs/test_imgs/left_3.jpeg"width="400" height="300">
+                      </figs>
+
+                    <figs>
+                      <img src="./p2_imgs/test_imgs/combined3.jpeg"width="400" height="300">
+                    </figs>
+
+                    </div>
+                    </center>
+                  </div>
+
+                  <!--     -->
+                  <div class="w3-container">
+                    <center>
+                    <div>
+                      <p>
+                        Lowest frequency (level 5)
+                      </p>
+                      <figs>
+                        <img src="./p2_imgs/test_imgs/right5.jpeg"width="400" height="300">
+                      </figs>
+
+                      <figs>
+                        <img src="./p2_imgs/test_imgs/left_5.jpeg"width="400" height="300">
+                      </figs>
+
+                    <figs>
+                      <img src="./p2_imgs/test_imgs/combined5.jpeg"width="400" height="300">
+                    </figs>
+
+                    </div>
+                    </center>
+                  </div>
+
+                  <!--     -->
+                  <div class="w3-container">
+                    <center>
+                    <div>
+                      <p>
+                        Final multi-resolution blended image
+                      </p>
+                    <figs>
+                      <img src="./p2_imgs/test_imgs/woohoo.jpeg"width="600" height="450">
+                    </figs>
+                    </div>
+                    <hr>
+                    </center>
+                  </div>
+                </div>
+      <hr>
+      <hr>
+<!--  end project 2  -->
 </div>
 
+<!--  start project 3  -->
+<div class="w3-row" id="Page3" style="display:none">
+
+    <!-- Header -->
+    <header class="w3-container w3-center w3-padding-32">
+      <h1><b>COMPSCI 194-26: Project 3</b></h1>
+      <p>Face Morphing</p>
+    <p>Varun Saran </p>
+    </header>
+
+    <!-- Grid -->
+    <div class="w3-row">
+
+    <!-- Blog entries -->
+    <div class>
+
+      <div class="w3-card-4 w3-margin w3-white">
+
+
+            <div class="w3-container">
+              <div class="w3-container">
+                <h3><b>Step 1. Defining Correspondences</b></h3>
+              </div>
+
+                <p>
+                  To define correspondences, I selected 56 points (including 4 corners) on each face image. These points represent features that are matched between 2 images.
+        This picture shows the 56 points on an image of Steph Curry.
+
+    </p>
+    <p>
+              To calculate a triangulation, I used Delauney triangulation, as shown in this image.
+             </p>
+              <center>
+              <div>
+                <figs>
+                  <img src="./p3_imgs/steph.jpeg" width="500" height="350">
+                  <figcaption>Initial image of Stephen Curry</figcaption>
+                </figs>
+
+                <figs>
+                  <img src="./p3_imgs/final_imgs/keypoints.jpeg" width="500" height="350">
+                  <figcaption>Chosen keypoints</figcaption>
+                </figs>
+
+                <figs>
+                  <img src="./p3_imgs/final_imgs/steph_triangles.jpeg" width="600" height="436">
+                  <figcaption>Delauney Triangulation on Steph </figcaption>
+                </figs>
+
+              </div>
+            </center>
+
+            </div>
+          </div>
+
+
+          <div class="w3-container">
+            <div class="w3-container">
+              <h3><b>Part 2: Midway Face</b></h3>
+
+            </div>
+
+              <p>
+                I followed these steps to create the midway face:
+        1. Compute the “average shape” by averaging the key point locations of the 2 images.
+        2. Warp both faces into that average shape
+        3. Given the 2 warped images, average the colors together to get a morphed image.
+
+
+        To warp 2 faces, I had to find an affine transformation to warp each triangle in one image, to the corresponding triangle in the other.
+        Affine transformations have 6 variables, so 3 sets of (x,y) coordinates is enough to solve the system.
+
+        Once we know how to warp one triangle into its corresponding shape, we just have to loop over all triangles, and warp them all to match the new shape.
+            </p>
+            <p>
+    Instead of doing this forward warping, however, I did inverse warping. Forward warping creates holes in the result image because not every point needs to be hit, like if a small triangle gets mapped to a much larger one.
+    So instead of warping the source image’s triangles to the destination, I warped the destination’s triangles to the source.
+            </p>
+            <center>
+            <div>
+              <figs>
+                <img src="./p3_imgs/steph.jpeg" width="400" height="280">
+                <figcaption>Original Steph</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p3_imgs/final_imgs/22.jpeg" width="400" height="280">
+                <figcaption>Midway Face</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p3_imgs/lebron.jpeg" width="450" height="280">
+              <figcaption>Original Lebron </figcaption>
+            </figs>
+
+
+            </div>
+          </center>
+
+          </div>
+        </div>
+
+
+      </div>
+      <!-- Blog entry -->
+
+      <hr>
+
+
+
+      <div class="w3-card-4 w3-margin w3-white">
+        <div class="w3-container">
+          <h3><b>Part 3: The Morph Sequence </b></h3>
+        </div>
+        <div class="w3-container">
+          <p>
+            For the average image, the features of the 2 images were averaged. To create a gif animation, however, we need a gradually changing set of features. I used 45 frames, so my features were gradually changed from image 1’s features to image 2’s features.
+
+          </p>
+          <div class="w3-container">
+            <center>
+            <div>
+              <figs>
+                <img src="./p3_imgs/final_imgs/transition.gif"width="500" height="350">
+                <figcaption>The full morphing animation</figcaption>
+              </figs>
+
+            </div>
+          </center>
+        </div>
+        </div>
+      </div>
+
+      <div class="w3-card-4 w3-margin w3-white">
+        <div class="w3-container">
+          <h3><b>The “Mean Face” of a Population</b></h3>
+        </div>
+        <div class="w3-container">
+          <p>
+            I used the Danes dataset found here: https://web.archive.org/web/20210305094647/http://www2.imm.dtu.dk/~aam/datasets/datasets.html
+            It includes pre-selected key points, so I didn’t need to manually select points for each of the images. For my project, I only used image type 1, which is a full frontal face with a neutral expression. I also only used the male subpopulation because I thought a male/female midway mix could have weird translucent hair.
+
+            1. The average face shape was calculated by averaging the key points across all the images.
+            2. Each face was then morphed into the average shape.
+          </p>
+    <p>
+      here are some results of morphing a few Danes into the shape of the average Dane. The numbers I use are from the original numbering used in the dataset.
+        </p>
+        <div class="w3-container">
+          <center>
+          <div>
+            <figs>
+              <img src="./p3_imgs/final_imgs/01-1m.jpg"width="200" height="150">
+              <figcaption>original Dane 1</figcaption>
+            </figs>
+          <figs>
+            <img src="./p3_imgs/morph_danes_to_avg/1.jpeg"width="200" height="150">
+            <figcaption>Morph Dane 1 to avg Dane shape</figcaption>
+          </figs>
+          </div>
+
+
+
+          <div>
+
+            <figs>
+              <img src="./p3_imgs/final_imgs/11-1m.jpg"width="200" height="150">
+              <figcaption>original Dane 11</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p3_imgs/morph_danes_to_avg/11.jpeg"width="200" height="150">
+            <figcaption>Morph Dane 11 to avg Dane shape</figcaption>
+          </figs>
+          </div>
+
+
+
+          <div>
+
+            <figs>
+              <img src="./p3_imgs/final_imgs/19-1m.jpg"width="200" height="150">
+              <figcaption>original Dane 19</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p3_imgs/morph_danes_to_avg/19.jpeg"width="200" height="150">
+            <figcaption>Morph Dane 19 to avg Dane shape</figcaption>
+          </figs>
+          </div>
+
+          <div>
+
+            <figs>
+              <img src="./p3_imgs/final_imgs/39-1m.jpg"width="200" height="150">
+              <figcaption>original Dane 39</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p3_imgs/morph_danes_to_avg/39.jpeg"width="200" height="150">
+            <figcaption>Morph Dane 39 to avg Dane shape</figcaption>
+          </figs>
+          </div>
+
+
+        </center>
+      </div>
+
+          <p>
+
+    3. To compute the average face, I just averaged all the pixel values at each point. The results show a very smooth, symmetric face as shown here.
+
+
+    Here are some results of Steph Curry morphed into the shape of an average Danish male:
+
+
+    And here is the average Dane morphed into Steph Curry’s shape:
+
+          </p>
+          <div class="w3-container">
+            <center>
+            <div>
+
+              <figs>
+                <img src="./p3_imgs/final_imgs/avg_dane.jpeg"width="200" height="150">
+                <figcaption>avg Dane</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p3_imgs/final_imgs/steph_to_dane.jpeg"width="200" height="150">
+              <figcaption>Steph in the shape of a Dane</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p3_imgs/final_imgs/dane_to_steph.jpeg"width="200" height="150">
+              <figcaption>Average Dane morphed into steph</figcaption>
+            </figs>
+
+            </div>
+          </center>
+        </div>
+        </div>
+      </div>
+
+
+
+
+      <div class="w3-card-4 w3-margin w3-white">
+        <div class="w3-container">
+          <h3><b>Caricatures </b></h3>
+        </div>
+        <div class="w3-container">
+          <p>
+            Caricatures are just images of people with overly exaggerated features. To make Steph Curry extra Danish, instead of doing a midway morph with the average Dane, we can take Steph’s features, and add a scaled vector of the difference between steph and the average dane
+    New features = steph_features + alpha*(dane_features - steph_features)
+    A positive alpha makes Steph look more Danish, and a negative alpha makes him look less Danish.
+    Resulting images can be seen here:
+
+          </p>
+          <div class="w3-container">
+            <center>
+            <div>
+              <figs>
+                <img src="./p3_imgs/final_imgs/less_danish_steph.jpeg"width="200" height="150">
+                <figcaption>Less Danish Steph</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p3_imgs/final_imgs/more_danish_steph.jpeg"width="200" height="150">
+                <figcaption>More Danish Steph</figcaption>
+              </figs>
+          </div>
+
+          </center>
+
+        </div>
+        </div>
+      </div>
+
+        <hr>
+
+
+
+        <div class="w3-card-4 w3-margin w3-white">
+          <div class="w3-container">
+            <h3><b>Bells and Whistles 1</b></h3>
+            <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+          </div>
+          <p>
+          I changed the age of my friend, using an average 10 year old male picture found online (source: http://faceresearch.org/demos/images/thumbs/avg_res/age/10_male), and separately using an average baby (source: http://faceresearch.org/demos/images/thumbs/avg_res/age/baby).
+          </p>
+
+
+          <div class="w3-container">
+            <center>
+            <div>
+              <figs>
+                <img src="./p3_imgs/cunninggang/mike.jpg"width="350" height="325">
+                <figcaption>Original</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p3_imgs/kid.jpeg"width="350" height="325">
+                <figcaption>Average Kid</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p3_imgs/baby.jpeg"width="350" height="325">
+              <figcaption>Average Baby</figcaption>
+            </figs>
+            </div>
+            </center>
+
+            <center>
+            <div>
+              <figs>
+                <img src="./p3_imgs/final_imgs/kid_mike_shape.jpeg"width="350" height="325">
+                <figcaption>morphed to kid shape</figcaption>
+              </figs>
+
+              <figs>
+              <img src="./p3_imgs/final_imgs/kid_mike_appearance.jpeg"width="350" height="325">
+                <figcaption>morphed to kid appearance</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p3_imgs/final_imgs/kid_mike.jpeg"width="350" height="325">
+              <figcaption>appearance + shape</figcaption>
+            </figs>
+
+            </center>
+
+
+            <center>
+            <div>
+              <figs>
+                <img src="./p3_imgs/final_imgs/baby_mike_shape.jpeg"width="350" height="325">
+                <figcaption>morephed to baby shape</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p3_imgs/final_imgs/baby_mike_appearance.jpeg"width="350" height="325">
+                <figcaption>Morphed to baby appearance</figcaption>
+              </figs>
+              <figs>
+                <img src="./p3_imgs/final_imgs/baby_mike.jpeg"width="350" height="325">
+                <figcaption>shape + appearance</figcaption>
+              </figs>
+            </div>
+            </center>
+
+          </div>
+        </div>
+
+
+          <div class="w3-card-4 w3-margin w3-white">
+            <div class="w3-container">
+              <h3><b> Bells and Whistles 2</b></h3>
+              <!--<h5>Title description, <span class="w3-opacity">April 7, 2014</span></h5>-->
+            </div>
+
+            <div class="w3-container">
+              <p>
+                Chain of morphs with my friends. For this part, I asked my friends for pictures of themselves, and morphed one person to the next.
+                The results vary. Going from someone with long hair to someone with short hair looks a little strange, and differences in background
+                also take away from the morph.
+                My favorite transition was between my 2 roommates, whose pictures had the same background, and they both have short hair. The result is extremeley smooth
+                and honestly each of the middle frames could be an actual person.
+              </p>
+              <center>
+              <div>
+                <figs>
+                  <img src="./p3_imgs/final_imgs/mike_to_ashwin.gif" width="500" height="475">
+                  <figcaption>Morphing between 2 people with similar backgrounds and hair length</figcaption>
+                </figs>
+              </div>
+
+              <div>
+                <figs>
+                  <img src="./p3_imgs/combo_compressed.gif" width="500" height="475">
+                  <figcaption>A chain of morphs between my friends</figcaption>
+                </figs>
+              </div>
+            </center>
+            </div>
+          </div>
+        <hr>
+        <hr>
+    </div>
 </div>
+<!--  end project 3 -->
+
+<!-- start proj5 -->
+<div class="w3-row" id="Page5" style="display:none">
+  <div class="w3-content" style="max-width:1400px">
+  <!-- Header -->
+  <header class="w3-container w3-center w3-padding-32">
+    <h1><b>Project 5: Facial Keypoint Detection with Neural Networks</b></h1>
+  </header>
+
+  <!-- Grid -->
+  <div class="w3-row">
+    <div class="w3-card-4 w3-margin w3-white">
+
+  <!-- Blog entries -->
+  <div class>
+    <div class="w3-container">
+      <div class="w3-container">
+        <h3><b>Nose Tip Detection</b></h3>
+
+      </div>
+        <p>
+        For this part, we use PyTorch and a simple CNN to train a model to detect the tip of the nose on faces. We are not predicting
+        the entire set of 58 keypoints, but rather just 1 (x,y) keypoint for the tip of the nose.
+      </p>
+
+
+
+    </div>
+
+    <center>
+    <div>
+      <p>Visualizing the given keypoint on the tip of the nose </p>
+      <figs>
+        <img src="./p5_imgs/viz_kp/1.jpeg" width="300" height="400">
+      </figs>
+
+      <figs>
+        <img src="./p5_imgs/viz_kp/2.jpeg" width="300" height="400">
+
+      </figs>
+
+      <figs>
+        <img src="./p5_imgs/viz_kp/3.jpeg" width="300" height="400">
+
+      </figs>
+
+      <figs>
+        <img src="./p5_imgs/viz_kp/4.jpeg"width="300" height="400">
+      </figs>
+
+    </div>
+  <hr>
+  <hr>
+  <hr>
+    <div>
+      <p>Some good predictions made on the testing set. The red marker is the true keypoint, and blue is the predicted keypoint</p>
+      <figs>
+        <img src="./p5_imgs/compare_pred_kp/5.jpeg" width="300" height="400">
+        <figcaption>Good prediction 1</figcaption>
+      </figs>
+
+      <figs>
+        <img src="./p5_imgs/compare_pred_kp/7.jpeg" width="300" height="400">
+        <figcaption>Good prediction 2</figcaption>
+      </figs>
+      <figs>
+        <img src="./p5_imgs/compare_pred_kp/2.jpeg" width="300" height="400">
+        <figcaption>Good prediction 3</figcaption>
+      </figs>
+
+      <figs>
+        <img src="./p5_imgs/compare_pred_kp/3.jpeg" width="300" height="400">
+        <figcaption>Good prediction 4</figcaption>
+      </figs>
+    </div>
+
+
+    <hr>
+    <hr>
+    <hr>
+      <div>
+        <p>Some bad predictions made on the testing set. Again, red is the true keypoint and blue is predicted </p>
+        <figs>
+          <img src="./p5_imgs/compare_pred_kp/4.jpeg" width="300" height="400">
+        </figs>
+
+        <figs>
+          <img src="./p5_imgs/compare_pred_kp/6.jpeg" width="300" height="400">
+        </figs>
+
+      </div>
+  </center>
+    <p>In all the bad images, the faces were tilted to the side, so that may have confused the model, making it perform worse.
+  The predictions in these cases were near the middle of the photo, around where the nose would have been if the person was looking straight ahead.
+    </p>
+
+  <p> And here is the training loss seen. It quickly decreases, and then settles at around 0.01 </p>
+
+  <center><figs>
+    <img src="./p5_imgs/notse-tip-loss.png" width="600" height="600">
+
+  </figs></center>
+  <p> A lower batch size did a lot worse, getting results as seen below. These predictions are very off, even on faces that are
+    looking straight ahead.
+
+    TODO: ADD PICS SHOWING THE BAD RESULTS
+    </p>
+
+
+    <div class="w3-container">
+
+
+
+    </div>
+
+  </div>
+
+
+  </div>
+
+  </div>
+
+  </div>
+
+
+  <div class="w3-card-4 w3-margin w3-white">
+
+        <div class="w3-container">
+          <div class="w3-container">
+            <h3><b>Full Facial Keypoints Detection</b></h3>
+
+          </div>
+
+  <p>
+  First, we look at some visualizations of correctly loading in the data, and viewing all 58 keypoints.
+  <center><figs>
+  <img src="./p5_imgs/viz_full/1.jpeg" width="300" height="400">
+  </figs>
+
+  <figs>
+  <img src="./p5_imgs/viz_full/2.jpeg" width="300" height="400">
+  </figs>
+  <figs>
+  <img src="./p5_imgs/viz_full/3.jpeg" width="300" height="400">
+  </figs>
+  </center>
+  <center>
+  <figs>
+    <img src="./p5_imgs/viz_full/augment.jpeg" width="1000" height="400">
+  </figs>
+  <p> Even with data augmentation, such as scaling, random cropping and translating, we can visualize all the keypoints. </p>
+  </center>
+  </p>
+  <hr>
+  <hr>
+  <hr>
+
+
+  <p>
+          The green dots are the true keypoints, and purple are the predicted keypoints.The first 2 are pretty good predictions, while
+          the next 2 are pretty bad. Both the bad ones are faces that are looking off to the side, and the model doesn't seem to be
+          able to predict the keypoints very well.
+         </p>
+          <center>
+          <div>
+            <figs>
+              <img src="./p5_imgs/part2-good.jpeg" width="500" height="350">
+              <figcaption>Good 1</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p5_imgs/part2-good2.jpeg" width="500" height="350">
+              <figcaption>Good 2</figcaption>
+            </figs>
+          </div>
+
+          <div>
+            <figs>
+              <img src="./p5_imgs/part2-bad.jpeg" width="500" height="350">
+              <figcaption>Bad 1</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p5_imgs/part2-bad2.jpeg" width="500" height="350">
+              <figcaption>Bad 2</figcaption>
+            </figs>
+          </div>
+        </center>
+
+        </div>
+
+        <pre>
+          Model Architecture
+
+  Layer 1: 1x32x5x5 Conv ->  ReLU -> 2x2 MaxPool -> Dropout
+  Layer 2: 32x64x3x3 Conv -> ReLU -> 2x2 MaxPool -> Dropout
+  Layer 3: 64x128x3x3 Conv -> ReLU -> 2x2 MaxPool -> Dropout
+  Layer 4: 128x256x3x3 Conv -> ReLU -> 2x2 MaxPool -> Dropout
+  Layer 5: 32x32x3x3 Conv -> ReLU -> 2x2 MaxPool -> Dropout
+  Layer 6: 36864x1000 Linear -> ReLU -> Dropout
+  Layer 7: 1000x1000 Linear -> ReLU -> Dropout
+  Layer 8: 1000x58*2 Linear
+  </pre>
+
+
+      <pre> And here are the learned filters for the first layer, visualized:
+        </pre>
+
+        <center>
+          <figs>
+            <img src="./p5_imgs/filters.jpeg" width="500" height="350">
+          </figs>
+          </center>
+
+  </div>
+
+
+  <div class>
+    <div class="w3-card-4 w3-margin w3-white">
+
+          <div class="w3-container">
+            <div class="w3-container">
+              <h3><b>Part 3: Train with Larger Dataset</b></h3>
+
+            </div>
+
+  <p>
+  In this section, we train a resnet18 model using a large dataset containing 6666 images.
+  I submitted my predictions to kaggle.
+
+  The architecture was the classic resnet18 architecture, with the first conv layer changed to have an input_channel =1
+  because the images are grayscale rather than color.
+  Additionally, the last linear layer was set to have an output channel of size 68*2 = 136 because we want to predict
+  68 (x,y) keypoint coordinates.
+  THe image below shows the classic architecture of resnet18 before the aboev modifications were made. (Source: https://www.researchgate.net/figure/ResNet-18-Architecture_tbl1_322476121)
+
+  </p>
+  <center>
+  <div>
+    <figs>
+      <img src="./p5_imgs/resnet-architecture.png" width="500" height="350">
+    </figs>
+    </div>
+    </center>
+  <p> This was the loss of my model, 10 times per eopch, with 8 epochs.
+  <p>
+    <div> <center>
+    <figs>
+      <img src="./p5_imgs/error.png" width="200" height="200">
+    </figs>
+    </center>
+    </div>
+
+    Now we can visualize the predictions after training the model. 90% of the data was used for training, while 10% was used for validation.
+    THe dataset was randomly split to get these 2 sets.
+
+    Here are results on the test set. THe image on the left is almost decent, while the one on the right is pretty bad. I had some difficulties
+    with propery transforming, and untransforming the images, which I think may be why the points don't seem great.
+    </p>
+    <center>
+    <div>
+
+
+      <figs>
+        <img src="./p5_imgs/pred.png" width="200" height="200">
+      </figs>
+      <figs>
+        <img src="./p5_imgs/results/10.png" width="200" height="200">
+      </figs>
+
+    </div>
+    </center>
+    <p>
+
+          here are some results of testing my model on my own dataset (pictures of my friends, and Obama). The results are very mixed.
+          They are decent, but not great at all as seen in the middle picture, where even the eyes aren't properly detected.
+           </p>
+            <center>
+            <div>
+              <figs>
+                <img src="./p5_imgs/results/000001.png" width="200" height="200">
+              </figs>
+
+              <figs>
+                <img src="./p5_imgs/results/000002.png" width="200" height="200">
+              </figs>
+              <figs>
+                <img src="./p5_imgs/results/000003.png" width="200" height="200">
+              </figs>
+
+            </div>
+          </center>
+
+          </div>
+  </div>
+  </div>
+    <hr>
+
+      <hr>
+      <hr>
+      <hr>
+</div>
+<!-- end proj 5 -->
+
+<!-- start final proj -->
+<div class="w3-row" id="FinalProject" style="display:none">
+  <!-- Header -->
+  <header class="w3-container w3-center w3-padding-32">
+    <h1><b>1: Augmented Reality </b></h1>
+  </header>
+
+  <!-- Grid -->
+  <div class="w3-row">
+    <div class="w3-card-4 w3-margin w3-white">
+
+  <!-- Blog entries -->
+  <div class>
+    <div class="w3-container">
+      <div class="w3-container">
+        <h3><b>Source video</b></h3>
+
+      </div>
+        <p>
+        This is the video I took of a marked box, with known 3D coordinates for each intersectio of lines (every line is spaced by 1cm).
+      </p>
+      <center>
+      <figs>
+        <img src="./finalp_imgs/smol.gif" width="600" height="450">
+      </figs>
+    </center>
+
+    </div>
+
+    <center>
+    <div>
+      <h3><b>Tracking corners</b></h3>
+      <p>I used a hacky harris corner detector. Starting with the first frame, which has known image coordinates for each 3d coordinate, I looked the next frame.
+      In the next frame, the corner is the closest corner found to the previous frame's known corner, given it is within 15 pixels in euclidean distance.
+    This is because there is little movement between frames, so the same corner should appear in a very similar position in the next frame.
+  Now we see a video of tracking these points over the course of the entire video. (I didnt use all intersections on the box because I didn't need so many. Since
+  the next frame relies on the previous frame's known coordinats, if we lose sight of an intersection in one frame, then it can never come back in the future.
+  However, since we have so many keypoints, we have enough to do least squares and find the camera projection matrix to convert from real coords to image coords.)</p>
+      <figs>
+        <img src="./finalp_imgs/out_vid_corners1.gif" width="600" height="450">
+      </figs>
+    </div>
+  <hr>
+  <hr>
+  <hr>
+    <div>
+      <h3><b>Image Projection</b></h3>
+      <p>Now that we have many keypoints with known real_world --> image coordinates, we can use least squares to solve for the projection matrix of each frame.
+        We can then use this matrix to project new real_world coords into our image frame. Here, we project a cube onto our image. As the video progresses and the
+        camera moves around, the AR box correctly follows the image world coordinates.
+      </p>
+      <figs>
+        <img src="./finalp_imgs/out_vid2.gif" width="600" height="450">
+      </figs>
+    </div>
+
+
+  </center>
+
+  </div>
+
+
+  <div class="w3-card-4 w3-margin w3-white">
+
+        <div class="w3-container">
+          <div class="w3-container">
+            <header class="w3-container w3-center w3-padding-32">
+              <h1><b>2: Gradient Domain Fusion </b></h1>
+            </header>
+
+          </div>
+  <p>
+  With gradient domain fusion, we can blend 2 images without any strange, high frequency seams between the two. This is done by matching the derivative inside a
+  source image (one that is pasted into a destination image).Instead of matching the pixel colors of the source image, it matches the derivative. This means the
+  color may change from green to red, but the overall appearance of the image will be the same. The destination image is kept as-is (except for the part that is
+  pasted on top of.)
+  </p>
+  <h3><b>Part 1: Toy Problem</b></h3>
+  <p> As a simple example of least squares, we start by taking an image from Toy Story, and creating a new image that has as similar a gradient (in both x and y) as possible.
+  We set up the Ax=b least squares problem, where x is our recovered image.
+  A is of size (2*width*height + 1, height*width). Each row represents a constraint. The first width*height rows represent the x-gradient constraint for every pixel.
+  The next width*height rows represent the y-gradient constraint for every pixel. Finally, to ensure the image looks similar, the last row sets the top left corner of the
+  image to be the same value as the original image.
+  Similarly, b is of size (2*width*height + 1, 1). It is created by taking the dot product of A and the toy image. Like in A, the first width*height entries represent
+  the x-gradient, the next width*height entries are the y-gradient, and the last entry is the top left pixel value, all from the image of the toy.
+    Now, when we solve for b, we ensure all gradients are the same, and the top left pixel is the same.
+    The result is extremeley similar to the original image.
+         </p>
+          <center>
+          <div>
+            <figs>
+              <img src="./finalp_imgs/toy_problem.png" width="400" height="400">
+              <figcaption>Original toy image</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./finalp_imgs/final_outputs/toy_recovered.jpeg" width="400" height="400">
+              <figcaption>Recovered image</figcaption>
+            </figs>
+          </div>
+
+        </center>
+
+        </div>
+
+  </div>
+
+
+  <div class>
+    <div class="w3-card-4 w3-margin w3-white">
+
+          <div class="w3-container">
+            <div class="w3-container">
+              <h3><b>Part 2: Poisson Blending</b></h3>
+
+            </div>
+
+  <p>
+  We now use a very similar technique to solve the following problem, where v is the result image, and s is the source image. We solve this separately for each channel,
+  and then stack them together to create a final image.
+  </p>
+  <center>
+  <div>
+    <figs>
+      <img src="./finalp_imgs/formula.png" width="800" height="100">
+    </figs>
+    </div>
+    </center>
+
+    <p> And here are some results.</p>
+
+
+    <center>
+    <div>
+      <figs>
+        <img src="./finalp_imgs/source1.jpg" width="500" height="400">
+        <figcaption>Source</figcaption>
+      </figs>
+      <figs>
+        <img src="./finalp_imgs/target1.jpg" width="500" height="400">
+        <figcaption>Target</figcaption>
+      </figs>
+
+      <figs>
+        <img src="./finalp_imgs/target_mask.png" width="500" height="400">
+        <figcaption>Mask</figcaption>
+      </figs>
+
+      <figs>
+        <img src="./finalp_imgs/final_outputs/final_1.jpeg" width="500" height="400">
+        <figcaption>Blended result</figcaption>
+      </figs>
+      </div>
+      </center>
+  <hr>
+  <hr>
+  <hr>
+  <hr>
+
+      <center>
+      <div>
+        <figs>
+          <img src="./finalp_imgs/src2.jpeg" width="500" height="400">
+          <figcaption>Source</figcaption>
+        </figs>
+        <figs>
+          <img src="./finalp_imgs/target2.jpg" width="500" height="400">
+          <figcaption>Target</figcaption>
+        </figs>
+
+        <figs>
+          <img src="./finalp_imgs/mask2.jpeg" width="500" height="400">
+          <figcaption>Mask</figcaption>
+        </figs>
+
+        <figs>
+          <img src="./finalp_imgs/final_outputs/e.jpeg" width="500" height="400">
+          <figcaption>Blended result</figcaption>
+        </figs>
+        </div>
+        </center>
+
+
+        <hr>
+        <hr>
+        <hr>
+        <hr>
+
+            <center>
+            <div>
+              <figs>
+                <img src="./finalp_imgs/src3.jpeg" width="500" height="400">
+                <figcaption>Source</figcaption>
+              </figs>
+              <figs>
+                <img src="./finalp_imgs/target3.jpeg" width="500" height="400">
+                <figcaption>Target</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./finalp_imgs/mask3.jpeg" width="500" height="400">
+                <figcaption>Mask</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./finalp_imgs/final_outputs/maybe.jpeg" width="500" height="400">
+                <figcaption>Blended result</figcaption>
+              </figs>
+              </div>
+              </center>
+
+              <p> another cool blended result of Trump's face on Obama's body. </p>
+
+
+
+
+  <hr>
+  <hr>
+  <hr>
+  <p> Now we look at a couple bad results. The outputs are decent, but the difference in the 2 images was too high, resulting in a clear blurry outline of the image.
+  </p>
+
+  <center>
+  <div>
+    <figs>
+      <img src="./finalp_imgs/final_outputs/maybe3.jpeg" width="500" height="300">
+      <figcaption>car on water</figcaption>
+    </figs>
+    <figs>
+      <img src="./finalp_imgs/final_outputs/target_result.png" width="500" height="400">
+      <figcaption>cat in a library</figcaption>
+    </figs>
+
+
+    </div>
+    </center>
+
+  </div>
+
+  <h1><b>2: Bells and Whistles </b></h1>
+  I tried doing the mixed gradient part of Gradient Domain Fusion.
+  I was able to correctly create the new b vector, which contains the sum of highest gradients in x and y, from the source or target. I have shown the source
+  and target images used, as well as the mixed gradient vector found. However, when solving with least squares like in the previous part, I am not able to
+  recreate an image that places the text onto the texture of the wall. I used the same A that worked in previous parts, and b as described above, but using least
+  squares to solve for x in A*x = b did not return a meaningful result.
+
+  <center>
+  <div>
+    <figs>
+      <img src="./finalp_imgs/wall2.png" width="400" height="400">
+      <figcaption>Background/target</figcaption>
+    </figs>
+    <figs>
+      <img src="./finalp_imgs/text.png" width="400" height="400">
+      <figcaption>Text/source</figcaption>
+      <figs>
+        <img src="./finalp_imgs/mixed_gradient.png" width="400" height="400">
+        <figcaption>Correct Mixed gradient</figcaption>
+    </figs>
+
+
+    </div>
+    </center>
+
+  </div>
+
+
+    <hr>
+
+      <hr>
+
+      <hr>
+      <hr>
+
+  </div>
+  </div>
+  </div>
+</div>
+<!-- end final proj -->
+
+<!-- start proj 4-->
+<div class="w3-row" id="Page4" style="display:none">
+    <div>
+      <div>
+  <div class="w3-content" style="max-width:1400px">
+  <!-- Header -->
+  <header class="w3-container w3-center w3-padding-32">
+    <h1><b>COMPSCI 194-26: Project 4</b></h1>
+
+  <p>Varun Saran </p>
+  </header>
+
+  <!-- Grid -->
+  <div class="w3-row">
+
+  <!-- Blog entries -->
+  <div class>
+  <p>4a: Image Warping and Mosaicing</p>
+    <div class="w3-card-4 w3-margin w3-white">
+
+          <div class="w3-container">
+            <div class="w3-container">
+              <h3><b>Image Rectification</b></h3>
+
+            </div>
+
+              <p>
+                I used inverse warping to get the warped image, so the H matrix takes points from the final warped shape coordinates
+                to the old unwarped shape coordinates.
+  </p>
+  <p>
+            To test my warping, I used a carpet (similar to the example seen in lecture), and warped it into a top-down view where the
+              pattern is much more visible.
+            I also did the night street example shown in the slides.
+           </p>
+            <center>
+            <div>
+              <figs>
+                <img src="./p4_imgs/carpet.jpeg" width="500" height="350">
+                <figcaption>Angled view of carpet</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p4_imgs/carped_fixed.jpeg" width="500" height="350">
+                <figcaption>Top down view of carpet</figcaption>
+              </figs>
+            </div>
+
+            <div>
+              <figs>
+                <img src="./p4_imgs/night.jpg" width="500" height="350">
+                <figcaption>Initial night view of building</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p4_imgs/night_fixed2.jpeg" width="500" height="350">
+                <figcaption>New perspective</figcaption>
+              </figs>
+            </div>
+          </center>
+
+          </div>
+        </div>
+
+
+        <div class="w3-container">
+          <div class="w3-container">
+            <h3><b>Bluring images into Mosaics</b></h3>
+
+          </div>
+
+            <p>
+              Now that we can successfully warp images, the next step is to take multiple images from the same spot
+              (with the camera slightly rotated), and then stitching these images together to form a mosaic.
+              For the first set of images, I took these photos by the building near Lewis hall.
+          </p>
+          <p>
+  A naive overlapping of the images causes a strange coloration, so I gradually increased/decreased the alpha of 2 images to
+  gradually blur from 1 image to the other. This makes the image coloration much better.
+          </p>
+          <p> The bluring was the hardest part, and I ended up using a 1D blur (every pixel in the same column had the same alpha)
+            so along x the image looks pretty clean. However, along y, along the top and bottom where only 1 image is present
+            (most of that column is overlapping, but due to the warp the top or bottom only comes from 1 image), there are some awkward
+            artifacts.
+          </p>
+          <center>
+
+
+            <div>
+              <figs>
+                <img src="./p4_imgs/building/1.jpg" width="300" height="400">
+                <figcaption>Original Left image</figcaption>
+              </figs>
+
+              <figs>
+                <img src="./p4_imgs/building/2.jpg" width="300" height="400">
+                <figcaption>Original middle image</figcaption>
+              </figs>
+
+            <figs>
+              <img src="./p4_imgs/building/3.jpg" width="300" height="400">
+              <figcaption>Original right image </figcaption>
+            </figs>
+            </div>
+
+          <div>
+            <figs>
+              <img src="./p4_imgs/door_mosaic/left.jpeg" width="1250" height="500">
+              <figcaption>Left remains unwarped</figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p4_imgs/door_mosaic/middle.jpeg" width="1250" height="500">
+              <figcaption>Middle warped to match left's coordinates</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p4_imgs/door_mosaic/right.jpeg" width="1250" height="500">
+            <figcaption>Right warped to match left + warped middle's coordinates</figcaption>
+          </figs>
+
+
+          </div>
+          <div>
+            <figs>
+              <img src="./p4_imgs/door_mosaic/mosaic_no_average.jpeg" width="1250" height="500">
+              <figcaption>Naive Warp and Overlap </figcaption>
+            </figs>
+
+            <figs>
+              <img src="./p4_imgs/door_mosaic/final_mosaic_1.jpeg" width="1250" height="500">
+              <figcaption>Warp and Average Weight</figcaption>
+            </figs>
+
+          </div>
+
+
+        </center>
+
+        </div>
+  <div class="w3-card-4 w3-margin w3-white">
+
+  <p> Another example, making a mosaic of a planar surface.</p>
+    <center>
+    <div>
+
+        <div>
+          <figs>
+            <img src="./p4_imgs/door_mosaic/door_left.jpg" width="300" height="400">
+            <figcaption>Original Left image</figcaption>
+          </figs>
+
+        <figs>
+          <img src="./p4_imgs/door_mosaic/door_right.jpg" width="300" height="400">
+          <figcaption>Original right image </figcaption>
+        </figs>
+        </div>
+
+        <div>
+
+          <figs>
+            <img src="./p4_imgs/door_mosaic/warp_right.jpeg" width="300" height="400">
+            <figcaption>Warp right image</figcaption>
+          </figs>
+        </div>
+        <div>
+          <figs>
+            <img src="./p4_imgs/door_mosaic/brr.jpeg" width="300" height="400">
+            <figcaption>Naive Warp and Overlap</figcaption>
+          </figs>
+        </div>
+
+        <div>
+          <figs>
+            <img src="./p4_imgs/door_mosaic/a_0.jpeg" width="300" height="400">
+            <figcaption>Warp Left + Alpha blur</figcaption>
+          </figs>
+
+        <figs>
+          <img src="./p4_imgs/door_mosaic/a_1.jpeg" width="300" height="400">
+          <figcaption>Warp Right + alpha blur </figcaption>
+        </figs>
+        </div>
+
+        <div>
+          <figs>
+            <img src="./p4_imgs/door_mosaic/a_2.jpeg" width="300" height="400">
+            <figcaption>Final Warp and Weighted Average using alpha bluring</figcaption>
+          </figs>
+        </div>
+        </center>
+
+
+      </div>
+    </div>
+
+
+    <div class="w3-card-4 w3-margin w3-white">
+
+    <p> Another example, making a mosaic of a planar surface.</p>
+      <center>
+      <div>
+
+          <div>
+            <figs>
+              <img src="./p4_imgs/outside/left.jpg" width="300" height="400">
+              <figcaption>Original Left image</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p4_imgs/outside/right.jpg" width="300" height="400">
+            <figcaption>Original right image </figcaption>
+          </figs>
+          </div>
+
+          <div>
+
+            <figs>
+              <img src="./p4_imgs/outside/zz.jpg" width="300" height="400">
+              <figcaption>Naive Warp and Overlap</figcaption>
+            </figs>
+          </div>
+
+          <div>
+            <figs>
+              <img src="./p4_imgs/outside/c_0.jpeg" width="300" height="400">
+              <figcaption>Warp Left + Alpha blur</figcaption>
+            </figs>
+
+          <figs>
+            <img src="./p4_imgs/outside/c_1.jpeg" width="300" height="400">
+            <figcaption>Warp Right + alpha blur </figcaption>
+          </figs>
+          </div>
+
+          <div>
+            <figs>
+              <img src="./p4_imgs/outside/c_2.jpeg" width="300" height="400">
+              <figcaption>Final Warp and Weighted Average using alpha bluring</figcaption>
+            </figs>
+          </div>
+          </center>
+          <p>
+  I tried taking these photos at night to see the difference, but it just ended up with the 2 photos having different lighting
+  autmatically chosen by my iPhone. The bluring is still a lot better than a naive overlap, but a vertical line is still clearly visible.
+          </p>
+
+        </div>
+      </div>
+      </div>
+
+    <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <div class="w3-container">
+          <h3><b>tell us what you learned</b></h3>
+        </div>
+          <p>
+  I found the warping part to be really cool, as well as the mosaicing.
+  For the homography section, I took the time to understand the derivation of the A matrix in Ax=b for least squares.
+  I saw some resources online that kinda gave it away, but at first I couldn't figure out why it was structured that way so I started with the p' = H*p
+  and really understood how the A matrix eventually got its structure (it had both an x and x')
+  The alpha bluring took a lot of trial and error to get it to show 1 image with normal looking intensities instead of weird overlapping images or strange colorations
+  or random transparent parts depending on how images overlap. I ended up just using a gradually increasing alpha along x when a new image was added
+  to the mosiac, and that was merged with the old image and a gradually decreasing alpha. The end result is actually pretty good.
+
+  I'm excited for the next part of the project, where we'll use automatic feature learnning, instead of having to manually click on features and figure
+  out the corresponding pixel coordinates. Manual mosaicing required quite a bit of manual work to find corresponding points in the right coordinate systems, so the
+  automatic detector will be really cool.
+  </p>
+
+      </div>
+    </div>
+
+    <hr>
+      <hr>
+      <hr>
+      <hr>
+  </div>
+
+  </div>
+
+  <!-- END GRID -->
+  </div><br>
+
+  <!-- END w3-content -->
+  </div>
+  <div class="w3-content" style="display:none" id="Page4b">
+  <!-- Header -->
+  <header class="w3-container w3-center w3-padding-32">
+    <h1><b>Project 4B: Feature matching and Autostitching</b></h1>
+  </header>
+
+  <!-- Grid -->
+  <div class="w3-row">
+    <div class="w3-card-4 w3-margin w3-white">
+
+  <!-- Blog entries -->
+  <div class>
+    <div class="w3-container">
+      <div class="w3-container">
+        <h3><b>Detecting Corner Features in an Image</b></h3>
+
+      </div>
+        <p>
+        For this part, we use the Harris interest point detector to find corners of the image.
+        Note that I did not do the Adaptive Non-Maximal Suppression part of this project.
+        Here we see all the corners detected on 2 pictures of a door.
+      </p>
+
+
+      <center>
+        <div>
+          <figs>
+            <img src="./p4_imgs/proj4b/corners/all_corners.jpeg" width="300" height="600">
+            <figcaption>All Harris corners (with corner strength above a certian threshold)</figcaption>
+          </figs>
+        </div>
+    </center>
+    </div>
+
+    <div class="w3-container">
+      <div class="w3-container">
+        <h3><b>Extracting and Matching Feature Descriptors</b></h3>
+
+      </div>
+        <p>
+        For each feature, we generate a feature descriptor according to section 4 of the paper.
+        For feature matching, we use the Lowe threshold to see the ratio of the 1-NN and the 2-NN to find a strong matching descriptor.
+        Finally, we use RANSAC to reject outliers. We choose 4 random features, and find the number of inliers. We repeat this numerous
+        times to find which set of 4 has the most inliers. To get the best homography, we can then do least squares on the entire set
+          of inliers to find the best transformation.
+          Here is a comparison of the features matched in 2 images, after doing feature matching and outlier rejection. Each point on each
+          image has a clear corresponding point on the other image. We also don't see any outliers, which is good because it means our
+          transformation will be accurate.
+
+      </p>
+
+
+      <center>
+        <div>
+          <figs>
+            <img src="./p4_imgs/proj4b/corners/matched_corners_2.png" width="400" height="500">
+            <figcaption> image 1</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./p4_imgs/proj4b/corners/matched_corners_1.png" width="400" height="500">
+            <figcaption> image 2 with clear corresponding features</figcaption>
+          </figs>
+        </div>
+    </center>
+
+    </div>
+
+
+    <div class="w3-container">
+      <div class="w3-container">
+        <h3><b>Image Mosaicing</b></h3>
+
+      </div>
+        <p>
+        Now we show a few image mosaics using automatic feature detection and stitching, with the same alpha blurring as in 4a.
+      </p>
+
+
+      <center>
+        <div>
+          <figs>
+            <img src="./p4_imgs/proj4b/door_left.jpg" width="400" height="500">
+            <figcaption> image 1</figcaption>
+          </figs>
+
+          <figs>
+            <img src="./p4_imgs/proj4b/door_right.jpg" width="400" height="500">
+            <figcaption> image 2 </figcaption>
+          </figs>
+        </div>
+
+        <div>
+          <figs>
+            <img src="./p4_imgs/proj4b/a_2.jpeg" width="400" height="500">
+            <figcaption> Auto Mosaicing </figcaption>
+          </figs>
+
+          <figs>
+            <img src="./p4_imgs/door_mosaic/a_2.jpeg" width="400" height="500">
+            <figcaption> Manual mosaic from part A</figcaption>
+          </figs>
+        </div>
+    </center>
+
+    <p>
+    Now we look at a building at night. THe lighting seems to be a little off in the camera, so unfortunately there is a distinct
+    line between the 2 images, even after alpha blurring.
+  </p>
+  <center>
+    <div>
+      <figs>
+        <img src="./p4_imgs/proj4b/left.jpg" width="400" height="500">
+        <figcaption> image 1</figcaption>
+      </figs>
+
+      <figs>
+        <img src="./p4_imgs/proj4b/right.jpg" width="400" height="500">
+        <figcaption> image 2</figcaption>
+      </figs>
+    </div>
+
+    <div>
+      <figs>
+        <img src="./p4_imgs/proj4b/c_2.jpeg" width="400" height="500">
+        <figcaption> Auto Mosaicing </figcaption>
+      </figs>
+
+      <figs>
+        <img src="./p4_imgs/outside/c_2.jpeg" width="400" height="500">
+        <figcaption> Manual mosaic from part A</figcaption>
+      </figs>
+    </div>
+  </center>
+
+  <p>
+  Finally, we mosaic a building. For the manual part, I stitched 3 images into 1. Instead of warping the leftmost and rightmost
+  into the middle image, I first warped the middle into left, and then the right into the warped version of the middle. This worked
+  well for the manual mosaicing. However, when I tried the same for automosaicing, it didnt work. This is because the warped Middle
+  image has some rotation, so feature matching didnt work because my feature descriptors are not rotation invariant.
+  So the same wwarping order didnt work. I have included an automosaic of just the middle image into the left image to show it looks
+  similar to the manual mosaic.
+  Additionally, for the automosaic, I also warped the left and right images into the middle image. THis allowed for all 3 images to be
+  mosaiced together. However, this means the perspective is different from the 3 image manual mosaic.
+  </p>
+  <center>
+  <div>
+    <figs>
+      <img src="./p4_imgs/proj4b/building_1.jpg" width="400" height="500">
+      <figcaption> image 1</figcaption>
+    </figs>
+
+    <figs>
+      <img src="./p4_imgs/proj4b/building_2.jpeg" width="400" height="500">
+      <figcaption> image 2</figcaption>
+    </figs>
+    <figs>
+      <img src="./p4_imgs/proj4b/building_3.jpg" width="400" height="500">
+      <figcaption> image 3</figcaption>
+    </figs>
+  </div>
+
+  <div>
+    <figs>
+      <img src="./p4_imgs/proj4b/bu_2.jpeg" width="700" height="500">
+      <figcaption> Auto Mosaicing on images 1 and 2 </figcaption>
+    </figs>
+
+    <figs>
+      <img src="./p4_imgs/door_mosaic/final_mosaic_1.jpeg" width="1250" height="500">
+      <figcaption> Manual mosaic from part A (images 1,2, and 3)</figcaption>
+    </figs>
+
+    <figs>
+      <img src="./p4_imgs/proj4b/test.jpeg" width="1250" height="500">
+      <figcaption> Automosaic all 3 images (but new perspective from manual). No blurring</figcaption>
+    </figs>
+
+
+    <figs>
+      <img src="./p4_imgs/proj4b/huhhhh.jpeg" width="1250" height="500">
+      <figcaption> Auto-mosaic with a (bad) attempt at blurring</figcaption>
+    </figs>
+
+
+  </div>
+  </center>
+
+  <p>
+    What I learned
+  </p>
+  <p>
+  I think the automatic feature detection and matching is really cool. Finding manual correspondences is not convenient and not scalable
+  so I really liked the automatic aspect of it. It made testing really easy because I didn't have to manually find coordinates of matching
+  points. I switched the order of warping for the last mosaic, and auto-mosaicing made that really easy. Making each auto-mosaic was so much faster
+  than each manual mosaic.
+
+  The previous projects have been really cool, but didn't feel too useful. This project seemed actually useful because feature detection, matching,
+  and outlier rejection all feel like something that have real world uses.
+  </p>
+
+    </div>
+
+  </div>
+  </div>
+  </div>
+  </div>
+</div>
+<!-- end proj4 -->
+
 
 <!-- END GRID -->
 </div><br>
