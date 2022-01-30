@@ -9,6 +9,26 @@
     *display: inline;
     padding: 10;
   }
+  .column {
+  float: left;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+.left {
+  width: 25%;
+}
+
+.right {
+  width: 75%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
   </style>
   <script>
 function show(shown, hidden) {
@@ -45,19 +65,191 @@ and is wrapped around the whole page content, except for the footer in this exam
   <h1><b>COMPSCI 194-26: Computer Vision and Computational Photography</b></h1>
 <p>Varun Saran </p>
 </header>
-<script> var onPage = 'Page1';</script>
-<div class="w3-row">
-  <a href="#" onclick="return show('Home',onPage);">Home</a>
-  <a href="#" onclick="return show('Page1',onPage);">Colorizing Images</a>
-  <a href="#" onclick="return show('Page2',onPage);">Filters and Image Hybridization</a>
-  <a href="#" onclick="return show('Page3',onPage);">Face Morphing</a>
-  <a href="#" onclick="return show('Page4',onPage);">Image Warping and Mosaicing</a>
-  <a href="#" onclick="return show('Page5',onPage);">Facial Keypoint Detection with Neural Networks</a>
-  <a href="#" onclick="return show('FinalProject',onPage);">AR + Gradient Domain Fusion</a>
-</div>
+<script> var onPage = 'Home';</script>
+
 <!-- Grid -->
 
-<div class="w3-row" id="Page1">
+<div class="column left">
+  <h2> Links </h2>
+  <div class="w3-row">
+    <a href="#" onclick="return show('Home',onPage);">Home</a>
+  </div><div class="w3-row">
+    <a href="#" onclick="return show('Page1',onPage);">Colorizing Images</a>
+    </div><div class="w3-row">
+    <a href="#" onclick="return show('Page2',onPage);">Filters and Image Hybridization</a>
+      </div><div class="w3-row">
+        <a href="#" onclick="return show('Page3',onPage);">Face Morphing</a>
+        </div><div class="w3-row">
+    <a href="#" onclick="return show('Page4',onPage);">Image Warping and Mosaicing</a>
+  </div><div class="w3-row">
+    <a href="#" onclick="return show('Page5',onPage);">Facial Keypoint Detection with Neural Networks</a>
+    </div><div class="w3-row">
+    <a href="#" onclick="return show('FinalProject',onPage);">AR + Gradient Domain Fusion</a>
+  </div>
+</div>
+<div class="column right">
+<!-- start home page -->
+<div class="w3-row" id="Home">
+  <!-- Blog entries -->
+  <div class>
+    <div class="w3-card-4 w3-margin w3-white">
+        <div class="w3-container">
+          <h3><b>Home</b></h3>
+        </div>
+        <p> The following is an overview of each project.
+
+        <div>
+        </div>
+      </div>
+
+  <div class="w3-card-4 w3-margin w3-white">
+      <div class="w3-container">
+        <h3><b>Project 1: Colorizing Images</b></h3>
+      </div>
+
+      <center>
+      <div>
+        <figs>
+          <img src="p1_output_files/0_bw_master-pnp-prok-00100-00161u.jpeg"width="100" height="200">
+          <figcaption>Black and White R,G,B channels</figcaption>
+        </figs>
+
+        <figs>
+          <img src="p1_output_files/0_in_master-pnp-prok-00100-00161u.jpeg"width="133" height="133">
+          <figcaption>Naive stacking of the 3 channels results in a blurry, miscolored colored image</figcaption>
+        </figs>
+
+      <figs>
+          <img src="p1_output_files/0_out_master-pnp-prok-00100-00161u.jpeg"width="200" height="200">
+        <figcaption>Using image pyramids and normalized cross correlation (NCC) scores to align the channels and create a color image.</figcaption>
+      </figs>
+
+      </div>
+      </center>
+    </div>
+
+
+    <div class="w3-card-4 w3-margin w3-white">
+        <div class="w3-container">
+          <h3><b>Project 2: Image Hybridization and Multi-Resolution Blending</b></h3>
+        </div>
+        <div class="w3-container">
+      <h3>Image Hybridization</h3>
+      <center>
+      <div>
+        <figs>
+          <img src="./p2_imgs/hybrid_imgs/2_2_steph.jpeg"width="150" height="115">
+          <figcaption>Source 1</figcaption>
+        </figs>
+
+        <figs>
+          <img src="./p2_imgs/hybrid_imgs/2_2_lebron.jpeg"width="150" height="115">
+          <figcaption>Source 2</figcaption>
+        </figs>
+      </div></center>
+      <p>By filtering out low frequencies on 1 image, and high frequencies on the other image, we can create a hybrid image. From close by (or when the image is big), this looks like the first image, and from far away (when the image is small) it looks like the second image. Here is the exact same image twice, scaled to different sizes so they look like completely different images.</p>
+      <center> <div>
+      <figs>
+          <img src="./p2_imgs/hybrid_imgs/stebron_comparison.jpeg"width="300" height="225">
+        <figcaption>Hybrid image</figcaption>
+      </figs>
+
+      </div>
+      </center>
+    </div>
+      </div>
+
+      <div class="w3-card-4 w3-margin w3-white">
+          <div class="w3-container">
+            <h3><b>Project 3: Facial Morphing</b></h3>
+          </div>
+
+          <p>    By selecting facial feature correspondences, we can morph one face into another.</p>
+          <center>
+          <div>
+            <figs>
+              <img src="./p3_imgs/final_imgs/mike_to_ashwin.gif" width="250" height="237">
+              <figcaption>Morphing from one face to another</figcaption>
+            </figs>
+          </div>
+          </center>
+
+        </div>
+
+        <div class="w3-card-4 w3-margin w3-white">
+            <div class="w3-container">
+              <h3><b>Project 4: Auto-Stitching Images</b></h3>
+            </div>
+            <p> Using the Harris interest point detector, we find all corners in 2 images. We then use feature descriptors and RANSAC to find corresponding corners in both images. Once we have enough points, we use least squares to find the transformation matrix defining the homography, and can then stitch the 2 images together.</p>
+            <center>
+            <div>
+              <figs>
+                <img src="./p4_imgs/proj4b/building_1.jpg" width="133" height="166">
+                <figcaption>Source 1</figcaption>
+              </figs>
+              <figs>
+                <img src="./p4_imgs/proj4b/building_2.jpeg" width="133" height="166">
+                <figcaption>Source 2</figcaption>
+              </figs>
+            </div>
+            </center>
+            <center>
+            <div>
+              <figs>
+                <img src="./p4_imgs/proj4b/bu_2.jpeg" width="350" height="250">
+                <figcaption>Auto-stitched image</figcaption>
+              </figs>
+            </center>
+
+          </div>
+        </div>
+        <div class="w3-card-4 w3-margin w3-white">
+            <div class="w3-container">
+              <h3><b>Project 5: Facial Keypoint Detection</b></h3>
+            </div>
+
+            <p> I trained a neural net to detect 58 keypoints on any human face</p>
+            <center>
+            <div>
+              <figs>
+                <img src="./p5_imgs/pred.png" width="133" height="133">
+              </figs>
+            </div>
+            </center>
+
+          </div>
+
+
+          <div class="w3-card-4 w3-margin w3-white">
+              <div class="w3-container">
+                <h3><b>Final Project: AR and Gradient Domain Fusion</b></h3>
+              </div>
+              <div>
+                <h3> Part 1: AR </h3>
+                <p> Using the Harris corner detector, I tracked corners in a video. With a known transformation between each frame, I then used image projection to project an AR cube onto a 2D video of the world. </p>
+                <center>
+                  <figs>
+                  <img src="./finalp_imgs/out_vid2.gif" width="200" height="150">
+                </figs>
+                </center>
+              </div>
+
+              <div>
+                <h3> Part 2: Gradient Domain Fusion</h3>
+                <p> Gradient Domain Fusion is matching the gradients of 2 images, so they can be smoothly blended without any high frequency seams that stand out. </p>
+                <center>
+                  <figs>
+                  <img src="./finalp_imgs/grad_fusion.jpg" width="200" height="225">
+                </figs>
+                </center>
+              </div>
+            </div>
+
+  </div>
+</div>
+<!-- end home page -->
+<!-- start proj1 -->
+<div class="w3-row" id="Page1" style="display:none">
   <!-- Blog entries -->
   <div class>
 
@@ -2725,13 +2917,12 @@ and is wrapped around the whole page content, except for the footer in this exam
   </div>
 </div>
 <!-- end proj4 -->
-
+</div>
 
 <!-- END GRID -->
 </div><br>
 
 <!-- END w3-content -->
-</div>
 
 </body>
 </html>
