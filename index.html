@@ -8,6 +8,11 @@
     display: inline-block;
     *display: inline;
     padding: 10;
+    width: min-content;
+  }
+  figcaption {
+	display:table-caption;
+	caption-side:bottom
   }
   .column {
   float: left;
@@ -17,10 +22,13 @@
 
 .left {
   width: 25%;
+  position: fixed;
+
 }
 
 .right {
   width: 75%;
+  margin-left: 25%;
 }
 
 /* Clear floats after the columns */
@@ -32,14 +40,10 @@
   </style>
   <script>
 function show(shown, hidden) {
-  if (hidden == "Page4") {
-    document.getElementById("Page4b").style.display='none';
-  }
+  window.scrollTo(0, 0);
+
   document.getElementById(hidden).style.display='none';
   document.getElementById(shown).style.display='block';
-  if (shown === "Page4") {
-    document.getElementById("Page4b").style.display='block';
-  }
   onPage = shown;
   return false;
 }
@@ -74,29 +78,28 @@ and is wrapped around the whole page content, except for the footer in this exam
   <div class="w3-row">
     <a href="#" onclick="return show('Home',onPage);">Home</a>
   </div><div class="w3-row">
-    <a href="#" onclick="return show('Page1',onPage);">Colorizing Images</a>
+    <a href="#" onclick="return show('Page1',onPage);">1. Colorizing Images</a>
     </div><div class="w3-row">
-    <a href="#" onclick="return show('Page2',onPage);">Filters and Image Hybridization</a>
+    <a href="#" onclick="return show('Page2',onPage);">2. Filters and Image Hybridization</a>
       </div><div class="w3-row">
-        <a href="#" onclick="return show('Page3',onPage);">Face Morphing</a>
+        <a href="#" onclick="return show('Page3',onPage);">3. Face Morphing</a>
         </div><div class="w3-row">
-    <a href="#" onclick="return show('Page4',onPage);">Image Warping and Mosaicing</a>
+    <a href="#" onclick="return show('Page4',onPage);">4. Image Warping and Mosaicing</a>
   </div><div class="w3-row">
-    <a href="#" onclick="return show('Page5',onPage);">Facial Keypoint Detection with Neural Networks</a>
+    <a href="#" onclick="return show('Page5',onPage);">5. Facial Keypoint Detection with Neural Networks</a>
     </div><div class="w3-row">
     <a href="#" onclick="return show('FinalProject',onPage);">AR + Gradient Domain Fusion</a>
   </div>
 </div>
-<div class="column right">
 <!-- start home page -->
-<div class="w3-row" id="Home">
+<div class="column right" id="Home">
   <!-- Blog entries -->
   <div class>
     <div class="w3-card-4 w3-margin w3-white">
         <div class="w3-container">
           <h3><b>Home</b></h3>
         </div>
-        <p> The following is an overview of each project.
+        <p> The following is an overview of each project. Click the links on the left to read more about each project, see some implementation details, and more examples.
 
         <div>
         </div>
@@ -111,12 +114,12 @@ and is wrapped around the whole page content, except for the footer in this exam
       <div>
         <figs>
           <img src="p1_output_files/0_bw_master-pnp-prok-00100-00161u.jpeg"width="100" height="200">
-          <figcaption>Black and White R,G,B channels</figcaption>
+          <figcaption caption-side="bottom">Black and White R,G,B channels</figcaption>
         </figs>
 
         <figs>
           <img src="p1_output_files/0_in_master-pnp-prok-00100-00161u.jpeg"width="133" height="133">
-          <figcaption>Naive stacking of the 3 channels results in a blurry, miscolored colored image</figcaption>
+          <figcaption>Naive stacking of the 3 channels results in a blurry, miscolored image with artifacts</figcaption>
         </figs>
 
       <figs>
@@ -249,7 +252,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 </div>
 <!-- end home page -->
 <!-- start proj1 -->
-<div class="w3-row" id="Page1" style="display:none">
+<div class="column right" id="Page1" style="display:none">
   <!-- Blog entries -->
   <div class>
 
@@ -600,15 +603,9 @@ and is wrapped around the whole page content, except for the footer in this exam
 </div>
 <!-- end proj 1 -->
 </div>
-<div class="w3-row" id="Page2" style="display:none">
+<div class="column right" id="Page2" style="display:none">
 
   <!-- Header -->
-  <header class="w3-container w3-center w3-padding-32">
-    <h1><b>COMPSCI 194-26: Project 2</b></h1>
-    <p>Fun with Filters and Frequencies</p>
-  <p>Varun Saran </p>
-  </header>
-
   <!-- Grid -->
   <div class="w3-row">
 
@@ -1448,14 +1445,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 </div>
 
 <!--  start project 3  -->
-<div class="w3-row" id="Page3" style="display:none">
-
-    <!-- Header -->
-    <header class="w3-container w3-center w3-padding-32">
-      <h1><b>COMPSCI 194-26: Project 3</b></h1>
-      <p>Face Morphing</p>
-    <p>Varun Saran </p>
-    </header>
+<div class="column right" id="Page3" style="display:none">
 
     <!-- Grid -->
     <div class="w3-row">
@@ -1840,7 +1830,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 <!--  end project 3 -->
 
 <!-- start proj5 -->
-<div class="w3-row" id="Page5" style="display:none">
+<div class="column right" id="Page5" style="display:none">
   <div class="w3-content" style="max-width:1400px">
   <!-- Header -->
   <header class="w3-container w3-center w3-padding-32">
@@ -2143,7 +2133,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 <!-- end proj 5 -->
 
 <!-- start final proj -->
-<div class="w3-row" id="FinalProject" style="display:none">
+<div class="column right" id="FinalProject" style="display:none">
   <!-- Header -->
   <header class="w3-container w3-center w3-padding-32">
     <h1><b>1: Augmented Reality </b></h1>
@@ -2423,27 +2413,25 @@ and is wrapped around the whole page content, except for the footer in this exam
 <!-- end final proj -->
 
 <!-- start proj 4-->
-<div class="w3-row" id="Page4" style="display:none">
+<div class="column right" id="Page4" style="display:none">
     <div>
       <div>
-  <div class="w3-content" style="max-width:1400px">
-  <!-- Header -->
-  <header class="w3-container w3-center w3-padding-32">
-    <h1><b>COMPSCI 194-26: Project 4</b></h1>
-
-  <p>Varun Saran </p>
-  </header>
+  <div class="w3-content" >
 
   <!-- Grid -->
   <div class="w3-row">
 
   <!-- Blog entries -->
-  <div class>
-  <p>4a: Image Warping and Mosaicing</p>
+  <div>
+    <div class="w3-card-4 w3-margin w3-white">
+    <p> In part A, I picked correspondences manually. In part B, I used the harris corner detector to automatically find correspondences </p>
+
+</div>
     <div class="w3-card-4 w3-margin w3-white">
 
           <div class="w3-container">
             <div class="w3-container">
+              <h2>4a: Image Warping and Mosaicing</h2>
               <h3><b>Image Rectification</b></h3>
 
             </div>
@@ -2529,17 +2517,17 @@ and is wrapped around the whole page content, except for the footer in this exam
 
           <div>
             <figs>
-              <img src="./p4_imgs/door_mosaic/left.jpeg" width="1250" height="500">
+              <img src="./p4_imgs/door_mosaic/left.jpeg" width="75%" height="20%"">
               <figcaption>Left remains unwarped</figcaption>
             </figs>
 
             <figs>
-              <img src="./p4_imgs/door_mosaic/middle.jpeg" width="1250" height="500">
+              <img src="./p4_imgs/door_mosaic/middle.jpeg" width="75%" height="20%"">
               <figcaption>Middle warped to match left's coordinates</figcaption>
             </figs>
 
           <figs>
-            <img src="./p4_imgs/door_mosaic/right.jpeg" width="1250" height="500">
+            <img src="./p4_imgs/door_mosaic/right.jpeg" width="75%" height="20%"">
             <figcaption>Right warped to match left + warped middle's coordinates</figcaption>
           </figs>
 
@@ -2547,12 +2535,12 @@ and is wrapped around the whole page content, except for the footer in this exam
           </div>
           <div>
             <figs>
-              <img src="./p4_imgs/door_mosaic/mosaic_no_average.jpeg" width="1250" height="500">
+              <img src="./p4_imgs/door_mosaic/mosaic_no_average.jpeg" width="75%" height="20%"">
               <figcaption>Naive Warp and Overlap </figcaption>
             </figs>
 
             <figs>
-              <img src="./p4_imgs/door_mosaic/final_mosaic_1.jpeg" width="1250" height="500">
+              <img src="./p4_imgs/door_mosaic/final_mosaic_1.jpeg" width="75%" height="20%">
               <figcaption>Warp and Average Weight</figcaption>
             </figs>
 
@@ -2695,34 +2683,19 @@ and is wrapped around the whole page content, except for the footer in this exam
       </div>
     </div>
 
-    <hr>
-      <hr>
-      <hr>
-      <hr>
   </div>
 
+
   </div>
-
-  <!-- END GRID -->
-  </div><br>
-
-  <!-- END w3-content -->
-  </div>
-  <div class="w3-content" style="display:none" id="Page4b">
-  <!-- Header -->
-  <header class="w3-container w3-center w3-padding-32">
-    <h1><b>Project 4B: Feature matching and Autostitching</b></h1>
-  </header>
-
-  <!-- Grid -->
   <div class="w3-row">
+    <div class="w3-content">
     <div class="w3-card-4 w3-margin w3-white">
 
   <!-- Blog entries -->
   <div class>
     <div class="w3-container">
       <div class="w3-container">
-        <h3><b>Detecting Corner Features in an Image</b></h3>
+        <h3><b> 4B: Detecting Corner Features in an Image</b></h3>
 
       </div>
         <p>
@@ -2877,18 +2850,18 @@ and is wrapped around the whole page content, except for the footer in this exam
     </figs>
 
     <figs>
-      <img src="./p4_imgs/door_mosaic/final_mosaic_1.jpeg" width="1250" height="500">
+      <img src="./p4_imgs/door_mosaic/final_mosaic_1.jpeg" width="75%" height="20%">
       <figcaption> Manual mosaic from part A (images 1,2, and 3)</figcaption>
     </figs>
 
     <figs>
-      <img src="./p4_imgs/proj4b/test.jpeg" width="1250" height="500">
+      <img src="./p4_imgs/proj4b/test.jpeg" width="75%" height="20%">
       <figcaption> Automosaic all 3 images (but new perspective from manual). No blurring</figcaption>
     </figs>
 
 
     <figs>
-      <img src="./p4_imgs/proj4b/huhhhh.jpeg" width="1250" height="500">
+      <img src="./p4_imgs/proj4b/huhhhh.jpeg" width="75%" height="20%">
       <figcaption> Auto-mosaic with a (bad) attempt at blurring</figcaption>
     </figs>
 
@@ -2915,11 +2888,19 @@ and is wrapped around the whole page content, except for the footer in this exam
   </div>
   </div>
   </div>
+
+  <!-- END GRID -->
+  </div>
+
+  </div>
+
+
+    <!-- style="display:none" id="Page4b" -->
+
+  <!-- Grid -->
 </div>
 <!-- end proj4 -->
-</div>
 
-<!-- END GRID -->
 </div><br>
 
 <!-- END w3-content -->
